@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobosEasy C++ 코드 규칙서</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2538;
+    --border: #2a3050;
+    --accent: #4f8ef7;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --code-bg: #0d1117;
+    --tag-blue: rgba(79,142,247,0.15);
+    --tag-green: rgba(16,185,129,0.15);
+    --tag-purple: rgba(124,58,237,0.15);
+    --tag-orange: rgba(245,158,11,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 2rem;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-header .logo {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-section {
+    padding: 0.75rem 1.25rem 0.25rem;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 0.4rem 1.25rem;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg3);
+    border-left-color: var(--accent);
+  }
+
+  .main {
+    margin-left: 240px;
+    padding: 2.5rem 3rem 4rem;
+    max-width: 960px;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--tag-blue);
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(79,142,247,0.3);
+  }
+
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero p {
+    color: var(--text2);
+    font-size: 14px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .meta-item {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .meta-item span {
+    color: var(--text2);
+  }
+
+  section {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .rule-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .rule-header {
+    padding: 0.875rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .rule-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-naming { background: var(--tag-blue); color: var(--accent); border: 1px solid rgba(79,142,247,0.25); }
+  .tag-style  { background: var(--tag-purple); color: #a78bfa; border: 1px solid rgba(124,58,237,0.25); }
+  .tag-docs   { background: var(--tag-green); color: var(--accent3); border: 1px solid rgba(16,185,129,0.25); }
+  .tag-struct { background: var(--tag-orange); color: var(--warn); border: 1px solid rgba(245,158,11,0.25); }
+
+  .rule-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .rule-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .rule-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .code-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .code-block {
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .code-label {
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .code-label.ok  { background: rgba(16,185,129,0.2); color: var(--accent3); }
+  .code-label.bad { background: rgba(239,68,68,0.15); color: #f87171; }
+
+  pre {
+    background: var(--code-bg);
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .kw  { color: #c792ea; }
+  .fn  { color: #82aaff; }
+  .cl  { color: #ffcb6b; }
+  .cm  { color: #546e7a; font-style: italic; }
+  .st  { color: #c3e88d; }
+  .nm  { color: #f78c6c; }
+  .at  { color: #89ddff; }
+
+  .rule-note {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.875rem;
+    background: rgba(79,142,247,0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 5px 5px 0;
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .rule-note strong { color: var(--accent); }
+
+  .single-code {
+    margin-top: 0.75rem;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .single-code pre {
+    border-radius: 0;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .toc-note {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.875rem 1.25rem;
+    margin-bottom: 2rem;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .toc-note code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 0.5rem;
+  }
+
+  .summary-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+
+  .summary-table .subject { color: var(--text); font-weight: 500; }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent3);
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+    .code-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">RobosEasy</div>
+    <h2>C++ 코드 규칙서</h2>
+  </div>
+
+  <div class="sidebar-section">개요</div>
+  <a href="#summary">규칙 요약표</a>
+
+  <div class="sidebar-section">네이밍 규칙</div>
+  <a href="#class">클래스 / 구조체</a>
+  <a href="#function">함수 / 메서드</a>
+  <a href="#member">멤버 변수</a>
+  <a href="#local">로컬 변수 / 파라미터</a>
+  <a href="#boolean">Boolean 변수 (is_ / has_)</a>
+  <a href="#enum">열거형 (Enum)</a>
+  <a href="#const">상수 / constexpr</a>
+  <a href="#macro">매크로 / 전처리기</a>
+  <a href="#namespace">네임스페이스</a>
+  <a href="#using">타입 별칭 (using)</a>
+  <a href="#file">파일명</a>
+
+  <div class="sidebar-section">코드 구조</div>
+  <a href="#header">헤더 가드</a>
+  <a href="#include">인클루드 순서</a>
+  <a href="#smartptr">스마트 포인터</a>
+  <a href="#conditional">조건부 컴파일</a>
+
+  <div class="sidebar-section">문서화</div>
+  <a href="#doxygen">Doxygen 주석</a>
+  <a href="#inline">인라인 주석</a>
+  <a href="#section">섹션 구분자</a>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="badge">v1.0 · C++17</div>
+    <h1>RobosEasy C++ 코드 규칙서</h1>
+    <p>RobosEasy 코드베이스 기반 코딩 컨벤션</p>
+    <div class="meta-row">
+      <div class="meta-item">기반 프레임워크: <span>ROS2 Humble</span></div>
+      <div class="meta-item">언어 표준: <span>C++17</span></div>
+      <div class="meta-item">파생 출처: <span>RobosEasy 코드베이스</span></div>
+    </div>
+  </div>
+
+  <!-- 요약표 -->
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-number">∑</div>
+      <h2>규칙 요약표</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-body" style="padding: 0;">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th style="width:30%">대상</th>
+              <th style="width:22%">규칙</th>
+              <th>예시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">클래스 / 구조체</td><td>PascalCase</td><td><span class="inline-code">StateEstimator</span>, <span class="inline-code">JointID</span></td></tr>
+            <tr><td class="subject">함수 / 메서드</td><td>PascalCase</td><td><span class="inline-code">TimerCallback</span>, <span class="inline-code">GetEndpointPose</span></td></tr>
+            <tr><td class="subject">멤버 변수</td><td>snake_case + 후행 _</td><td><span class="inline-code">imu_tare_request_</span>, <span class="inline-code">control_time_</span></td></tr>
+            <tr><td class="subject">로컬 변수</td><td>snake_case</td><td><span class="inline-code">latest_time</span>, <span class="inline-code">urdf_path</span></td></tr>
+            <tr><td class="subject">Boolean 변수</td><td>is_ / has_ 접두사</td><td><span class="inline-code">is_l_foot_contact_</span>, <span class="inline-code">has_velocity_state_interface</span></td></tr>
+            <tr><td class="subject">함수 파라미터</td><td>snake_case</td><td><span class="inline-code">node_name</span>, <span class="inline-code">joint_name</span></td></tr>
+            <tr><td class="subject">enum 타입명</td><td>PascalCase</td><td><span class="inline-code">FilterType</span>, <span class="inline-code">Filter</span></td></tr>
+            <tr><td class="subject">enum 값 (class)</td><td>PascalCase</td><td><span class="inline-code">FilterType::POS</span>, <span class="inline-code">FilterType::VEL</span></td></tr>
+            <tr><td class="subject">enum 값 (일반)</td><td>UPPER_SNAKE_CASE</td><td><span class="inline-code">NO_FILTERING</span>, <span class="inline-code">LOW_PASS_FILTER</span></td></tr>
+            <tr><td class="subject">static constexpr</td><td>snake_case</td><td><span class="inline-code">joint_count</span>, <span class="inline-code">l_hip_y</span></td></tr>
+            <tr><td class="subject">매크로 (#define)</td><td>UPPER_SNAKE_CASE</td><td><span class="inline-code">ALICE</span>, <span class="inline-code">ALICE4</span></td></tr>
+            <tr><td class="subject">네임스페이스</td><td>lowercase_snake</td><td><span class="inline-code">aeirobot</span>, <span class="inline-code">roboseasy_joint_controller</span></td></tr>
+            <tr><td class="subject">타입 별칭 (using)</td><td>PascalCase</td><td><span class="inline-code">using Imu = sensor_msgs::msg::Imu</span></td></tr>
+            <tr><td class="subject">파일명</td><td>snake_case</td><td><span class="inline-code">roboseasy_state_estimator.hpp</span></td></tr>
+            <tr><td class="subject">헤더 가드</td><td>UPPER_SNAKE_CASE + _</td><td><span class="inline-code">ROBOSEASY_STATE_ESTIMATOR_HPP_</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 클래스 -->
+  <section id="class">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>클래스 / 구조체</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">PascalCase (대문자로 시작, 단어마다 대문자)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모든 클래스와 구조체는 PascalCase를 따른다. 약어도 첫 글자만 대문자로 처리하는 것이 원칙이나, 로봇명 등 고유명사는 전체 대문자 허용.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">class</span> <span class="cl">StateEstimator</span> : <span class="kw">public</span> rclcpp::Node {};
+<span class="kw">class</span> <span class="cl">RobosEasyJointController</span> {};
+<span class="kw">struct</span> <span class="cl">JointID</span> {};
+<span class="kw">class</span> <span class="cl">ALICE4State</span> {};   <span class="cm">// 로봇 고유명사</span>
+<span class="kw">class</span> <span class="cl">JointFilter</span> {};</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="kw">class</span> <span class="cl">state_estimator</span> {};   <span class="cm">// snake_case X</span>
+<span class="kw">class</span> <span class="cl">stateEstimator</span> {};    <span class="cm">// camelCase X</span>
+<span class="kw">class</span> <span class="cl">STATEESTIMATOR</span> {};   <span class="cm">// 전체 대문자 X</span>
+<span class="kw">struct</span> <span class="cl">joint_id</span> {};          <span class="cm">// snake_case X</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 함수 -->
+  <section id="function">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>함수 / 메서드</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">PascalCase — 동사로 시작하는 것을 권장</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모든 멤버 함수와 자유 함수는 PascalCase를 사용한다. 동작을 명확히 표현하는 동사(Get, Set, Update, Calculate, Handle, Is, Has 등)로 시작하는 것이 권장된다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">void</span> <span class="fn">TimerCallback</span>();
+<span class="kw">void</span> <span class="fn">UpdateStateFromInterfaces</span>();
+<span class="kw">bool</span> <span class="fn">ReadStateFromCommandInterfaces</span>();
+<span class="cl">EndpointState</span> <span class="fn">GetEndpointPose</span>(<span class="kw">const</span> std::string &amp;name);
+<span class="kw">void</span> <span class="fn">HandleShutdownSignal</span>(<span class="kw">int</span> signum);
+<span class="kw">void</span> <span class="fn">ImuCallback</span>(<span class="kw">const</span> <span class="cl">Imu</span>::SharedPtr msg);
+<span class="kw">double</span> <span class="fn">GetTotalMass</span>();</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="kw">void</span> <span class="fn">timer_callback</span>();      <span class="cm">// snake_case X</span>
+<span class="kw">void</span> <span class="fn">timerCallback</span>();       <span class="cm">// camelCase X</span>
+<span class="kw">void</span> <span class="fn">update</span>();               <span class="cm">// 동작 불명확</span>
+<span class="kw">void</span> <span class="fn">cb</span>();                    <span class="cm">// 약어 X</span></pre>
+          </div>
+        </div>
+        <div class="rule-note">
+          <strong>접두사 패턴:</strong> Get/Set (접근자), Is/Has (bool 반환), Update/Refresh (갱신), Calculate/Compute (계산), Handle (이벤트 처리), Load/Save (입출력), Publish/Subscribe (ROS2)
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 멤버 변수 -->
+  <section id="member">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>멤버 변수</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">snake_case + 후행 밑줄 (_)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">클래스 멤버 변수는 모두 소문자 snake_case로 작성하고, 이름 끝에 밑줄 <code style="color:var(--accent3)">_</code>을 붙여 로컬 변수와 구분한다. 스마트 포인터, atomic 변수, 필터 객체 모두 동일 규칙을 따른다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">private:</span>
+  <span class="kw">int</span> <span class="at">odometry_mode_</span>;
+  <span class="kw">double</span> <span class="at">control_time_</span>;
+  std::atomic&lt;<span class="kw">bool</span>&gt; <span class="at">imu_tare_request_</span>;
+  <span class="kw">bool</span> <span class="at">is_l_foot_contact_</span>;
+  std::unique_ptr&lt;<span class="cl">LowPassFilter</span>&gt; <span class="at">com_x_lpf_</span>;
+  rclcpp::TimerBase::SharedPtr <span class="at">control_timer_</span>;</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="kw">private:</span>
+  <span class="kw">int</span> <span class="at">odometryMode</span>;      <span class="cm">// camelCase X</span>
+  <span class="kw">double</span> <span class="at">ControlTime</span>;    <span class="cm">// PascalCase X</span>
+  <span class="kw">bool</span> <span class="at">m_isContact</span>;      <span class="cm">// m_ 헝가리안 X</span>
+  <span class="kw">bool</span> <span class="at">isContact</span>;        <span class="cm">// 후행 _ 누락 X</span></pre>
+          </div>
+        </div>
+        <div class="rule-note">
+          <strong>중요:</strong> 로컬 변수와 멤버 변수를 구분하는 핵심 규칙이다. 후행 <code style="color:var(--accent3)">_</code>가 없으면 멤버 변수임을 인식하기 어려워진다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 로컬 변수 / 파라미터 -->
+  <section id="local">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>로컬 변수 / 함수 파라미터</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">snake_case (후행 밑줄 없음)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">함수 내부의 로컬 변수와 함수 파라미터는 snake_case를 사용하되 후행 <code style="color:var(--accent3)">_</code> 없이 쓴다. 멤버 변수와 명확히 구분된다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">void</span> <span class="fn">ImuCallback</span>(
+  <span class="kw">const</span> <span class="cl">Imu</span>::SharedPtr <span class="at">msg</span>)   <span class="cm">// 파라미터</span>
+{
+  <span class="kw">double</span> <span class="at">time_tolerance</span> = <span class="nm">0.1</span>;   <span class="cm">// 로컬 변수</span>
+  <span class="cl">Imu</span>::SharedPtr <span class="at">imu_msg</span> = <span class="kw">nullptr</span>;
+  std::string <span class="at">urdf_path</span>;
+  rclcpp::Time <span class="at">latest_time</span> = now();
+}</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre"><span class="kw">void</span> <span class="fn">ImuCallback</span>(
+  <span class="kw">const</span> <span class="cl">Imu</span>::SharedPtr <span class="at">Msg</span>)   <span class="cm">// 대문자 X</span>
+{
+  <span class="kw">double</span> <span class="at">timeTolerance</span> = <span class="nm">0.1</span>; <span class="cm">// camelCase X</span>
+  <span class="kw">double</span> <span class="at">time_tolerance_</span>;     <span class="cm">// 후행 _ X</span>
+  std::string <span class="at">p</span>;               <span class="cm">// 의미 없는 단문자 X</span>
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boolean 변수 -->
+  <section id="boolean">
+    <div class="section-header">
+      <div class="section-number" style="background: var(--accent3);">4+</div>
+      <h2>Boolean 변수 네이밍</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">반드시 <code style="color:var(--accent3); font-family:'JetBrains Mono',monospace; font-size:12px;">is_</code> 또는 <code style="color:var(--accent3); font-family:'JetBrains Mono',monospace; font-size:12px;">has_</code> 접두사로 시작</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">
+          <code style="color:var(--accent3)">bool</code> 타입의 변수는 반드시 <code style="color:var(--accent3)">is_</code> 또는 <code style="color:var(--accent3)">has_</code> 접두사로 시작한다.
+          이 규칙 덕분에 변수명을 보는 순간 <strong style="color:var(--text)">타입 선언 없이도</strong> <code style="color:var(--accent3)">true/false</code> 값을 가진다는 것을 즉시 알 수 있다.
+          네이밍만으로 타입을 전달하는 가장 기본적인 가독성 규칙이다.
+        </p>
+
+        <div style="background:var(--bg3); border-radius:8px; padding:1rem 1.25rem; margin-bottom:1rem; border:1px solid var(--border);">
+          <div style="font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.75rem; font-weight:700;">접두사 선택 기준</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--accent3); margin-bottom:0.4rem; font-family:'JetBrains Mono',monospace;">is_</div>
+              <div style="font-size:12px; color:var(--text2); line-height:1.6;">상태/조건을 묻는 경우<br>"~인가? / ~한가?"</div>
+            </div>
+            <div>
+              <div style="font-size:12px; font-weight:700; color:#f59e0b; margin-bottom:0.4rem; font-family:'JetBrains Mono',monospace;">has_</div>
+              <div style="font-size:12px; color:var(--text2); line-height:1.6;">인터페이스/기능 보유 여부<br>"~를 가지고 있는가?"</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — is_ (상태/조건)</div>
+            <pre><span class="cm">// 멤버 변수 (후행 _ 포함)</span>
+<span class="kw">bool</span> <span class="at">is_l_foot_contact_</span>;
+<span class="kw">bool</span> <span class="at">is_r_foot_contact_</span>;
+<span class="kw">bool</span> <span class="at">is_active_</span>;
+<span class="kw">bool</span> <span class="at">is_initialized_</span>;
+
+<span class="cm">// 로컬 변수 (후행 _ 없음)</span>
+<span class="kw">bool</span> <span class="at">is_valid</span> = <span class="kw">true</span>;
+<span class="kw">bool</span> <span class="at">is_empty</span> = queue.empty();
+<span class="kw">bool</span> <span class="at">is_linear_mode</span> = <span class="kw">true</span>;</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — has_ (인터페이스 보유)</div>
+            <pre><span class="cm">// 멤버 변수</span>
+<span class="kw">bool</span> <span class="at">has_velocity_state_interface_</span>;
+<span class="kw">bool</span> <span class="at">has_acceleration_state_interface_</span>;
+<span class="kw">bool</span> <span class="at">has_effort_command_interface_</span>;
+
+<span class="cm">// 로컬 변수</span>
+<span class="kw">bool</span> <span class="at">has_values</span> = <span class="kw">true</span>;
+<span class="kw">bool</span> <span class="at">has_linear_actuator</span> = <span class="kw">false</span>;
+<span class="kw">bool</span> <span class="at">has_valid_data</span> = !queue.empty();</pre>
+          </div>
+        </div>
+
+        <div class="code-grid" style="margin-top:0.75rem;">
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 접두사 없음</div>
+            <pre><span class="kw">bool</span> <span class="at">left_foot_contact</span>;  <span class="cm">// is_ 누락</span>
+<span class="kw">bool</span> <span class="at">velocity_interface</span>;  <span class="cm">// has_ 누락</span>
+<span class="kw">bool</span> <span class="at">linear</span>;              <span class="cm">// 타입 불분명</span>
+<span class="kw">bool</span> <span class="at">active</span>;              <span class="cm">// 타입 불분명</span>
+<span class="kw">bool</span> <span class="at">flag</span>;                <span class="cm">// 의미 없음</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 잘못된 접두사</div>
+            <pre><span class="kw">bool</span> <span class="at">bIsContact</span>;         <span class="cm">// 헝가리안 b X</span>
+<span class="kw">bool</span> <span class="at">IsContact</span>;           <span class="cm">// PascalCase X</span>
+<span class="kw">bool</span> <span class="at">check_contact</span>;       <span class="cm">// 동사 시작 X</span>
+<span class="kw">bool</span> <span class="at">contact_status</span>;      <span class="cm">// _status 접미사 X</span></pre>
+          </div>
+        </div>
+
+        <div class="rule-note" style="margin-top:0.75rem;">
+          <strong>한 눈에 알아보는 예시:</strong> &nbsp;
+          <code style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent3)">if (is_l_foot_contact_ &amp;&amp; has_velocity_state_interface_)</code>
+          &nbsp;— 변수명만 봐도 둘 다 <code style="color:var(--accent3)">bool</code>임을 즉시 인식할 수 있다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 열거형 -->
+  <section id="enum">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>열거형 (Enum)</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">타입명은 PascalCase, 값은 enum에 따라 다름</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">enum 타입명은 PascalCase. <code style="color:var(--accent3)">enum class</code> 값은 PascalCase, 일반 <code style="color:var(--accent3)">enum</code> 값은 UPPER_SNAKE_CASE를 사용한다. 타입 안전성을 위해 <code style="color:var(--accent3)">enum class</code> 사용을 권장한다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — enum class (권장)</div>
+            <pre><span class="kw">enum class</span> <span class="cl">FilterType</span>
+{
+  <span class="cl">Pos</span>,       <span class="cm">// 위치 필터</span>
+  <span class="cl">Vel</span>,       <span class="cm">// 속도 필터</span>
+  <span class="cl">Torque</span>,   <span class="cm">// 토크 필터</span>
+  <span class="cl">Count</span>
+};
+
+<span class="cm">// 사용</span>
+<span class="cl">FilterType</span> t = <span class="cl">FilterType</span>::<span class="cl">Vel</span>;</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — 일반 enum</div>
+            <pre"><span class="kw">enum</span> <span class="cl">Filter</span>
+{
+  <span class="cl">NO_FILTERING</span>   = <span class="nm">0</span>,
+  <span class="cl">LOW_PASS_FILTER</span> = <span class="nm">1</span>,
+  <span class="cl">ONE_EURO_FILTER</span> = <span class="nm">2</span>,
+};
+
+<span class="cm">// 사용</span>
+<span class="cl">Filter</span> f = <span class="cl">LOW_PASS_FILTER</span>;</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 상수 -->
+  <section id="const">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>상수 / constexpr</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">static constexpr 멤버: snake_case / 자유 상수: kCamelCase 또는 UPPER_SNAKE</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">구조체 내부 <code style="color:var(--accent3)">static constexpr</code> 멤버는 snake_case (물리적 의미를 담은 이름 사용). 전역 constexpr 및 const는 UPPER_SNAKE_CASE 사용.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">struct</span> <span class="cl">JointID</span>
+{
+  <span class="kw">static constexpr</span> uint8_t <span class="at">fixed_base</span>   = <span class="nm">0</span>;
+  <span class="kw">static constexpr</span> uint8_t <span class="at">l_hip_y</span>      = <span class="nm">11</span>;
+  <span class="kw">static constexpr</span> uint8_t <span class="at">r_knee_p</span>     = <span class="nm">20</span>;
+  <span class="kw">static constexpr</span> uint8_t <span class="at">joint_count</span>  = <span class="nm">40</span>;
+};
+
+<span class="kw">constexpr double</span> <span class="at">GRAVITY_ACCEL</span> = <span class="nm">9.80665</span>;</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 매크로 -->
+  <section id="macro">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>매크로 / 전처리기 (#define)</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">UPPER_SNAKE_CASE — 조건부 컴파일 플래그에만 사용</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">매크로는 모두 대문자 UPPER_SNAKE_CASE로 정의한다. 주로 로봇 버전 분기나 플랫폼 조건부 컴파일에 사용. 단순 상수에는 사용하지 않고 <code style="color:var(--accent3)">constexpr</code>로 대체할 것.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">#define</span> <span class="cl">ALICE</span>         1
+<span class="kw">#define</span> <span class="cl">ALICE_VERSION</span> 2
+
+<span class="kw">#if</span> <span class="cl">ALICE</span>
+  <span class="cm">// Alice 로봇 전용 코드</span>
+<span class="kw">#endif</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="kw">#define</span> <span class="cl">gravity</span> 9.80665  <span class="cm">// 소문자 X</span>
+<span class="kw">#define</span> <span class="cl">Alice</span>   1         <span class="cm">// PascalCase X</span>
+<span class="kw">#define</span> <span class="cl">MAX_JOINTS</span> 40     <span class="cm">// constexpr로 대체</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 네임스페이스 -->
+  <section id="namespace">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>네임스페이스</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">lowercase_snake_case — 패키지명과 동일하게</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">네임스페이스는 ROS2 패키지명과 일치시켜 전부 소문자 snake_case로 작성한다. 중첩 네임스페이스는 패키지 계층을 반영한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">namespace</span> <span class="at">aeirobot</span>
+{
+  <span class="kw">class</span> <span class="cl">StateEstimator</span> {};
+} <span class="cm">// namespace roboseasy</span>
+
+<span class="kw">namespace</span> <span class="at">roboseasy_joint_controller</span>
+{
+  <span class="kw">class</span> <span class="cl">RobosEasyJointController</span> {};
+} <span class="cm">// namespace roboseasy_joint_controller</span></pre>
+        </div>
+        <div class="rule-note">
+          닫는 괄호에 반드시 <strong>// namespace 이름</strong> 주석을 붙인다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- using -->
+  <section id="using">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>타입 별칭 (using)</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">PascalCase — ROS2 메시지 타입 단축명에 주로 사용</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">긴 ROS2 메시지 타입은 <code style="color:var(--accent3)">using</code>으로 별칭을 선언해 코드 가독성을 높인다. 별칭은 PascalCase로 작성한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">using</span> <span class="cl">Imu</span>         = sensor_msgs::msg::<span class="cl">Imu</span>;
+<span class="kw">using</span> <span class="cl">JointState</span>  = sensor_msgs::msg::<span class="cl">JointState</span>;
+<span class="kw">using</span> <span class="cl">RobotState</span>  = roboseasy_state_msgs::msg::<span class="cl">RobotState</span>;
+<span class="kw">using</span> <span class="cl">FsrState</span>    = roboseasy_state_msgs::msg::<span class="cl">FsrState</span>;
+<span class="kw">using</span> <span class="cl">RobotPose</span>   = alice_walking_module_msgs::msg::<span class="cl">RobotPose</span>;</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 파일명 -->
+  <section id="file">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>파일명</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STYLE</span>
+        <div class="rule-title">lowercase_snake_case + 확장자 (.hpp / .cpp)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">헤더 파일은 <code style="color:var(--accent3)">.hpp</code>, 구현 파일은 <code style="color:var(--accent3)">.cpp</code> 확장자를 사용한다. 파일명은 전부 소문자 snake_case.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre>roboseasy_state_estimator.hpp
+roboseasy_state_estimator.cpp
+roboseasy_joint_controller.hpp
+alice4_state_estimator.hpp</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre>StateEstimator.hpp      <span class="cm">// PascalCase X</span>
+stateEstimator.h        <span class="cm">// .h 확장자 X</span>
+RobosEasyController.HPP  <span class="cm">// 대문자 확장자 X</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 헤더 가드 -->
+  <section id="header">
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <h2>헤더 가드</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-struct">STRUCT</span>
+        <div class="rule-title">#ifndef 방식 — PACKAGE_FILENAME_HPP_ 형식</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">헤더 가드는 <code style="color:var(--accent3)">#ifndef</code> / <code style="color:var(--accent3)">#define</code> / <code style="color:var(--accent3)">#endif</code> 방식 사용. 형식은 전체 대문자 + 경로_파일명_HPP_ (후행 밑줄 포함).</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm">// 파일: roboseasy_state_estimator.hpp</span>
+<span class="kw">#ifndef</span> <span class="cl">ROBOSEASY_STATE_ESTIMATOR_HPP_</span>
+<span class="kw">#define</span> <span class="cl">ROBOSEASY_STATE_ESTIMATOR_HPP_</span>
+
+<span class="cm">// ... 헤더 내용 ...</span>
+
+<span class="kw">#endif</span> <span class="cm">// ROBOSEASY_STATE_ESTIMATOR_HPP_</span>
+
+<span class="cm">// 파일: alice4_state.hpp</span>
+<span class="kw">#ifndef</span> <span class="cl">ALICE4STATE_HPP</span>
+<span class="kw">#define</span> <span class="cl">ALICE4STATE_HPP</span></pre>
+        </div>
+        <div class="rule-note">
+          <code style="color:var(--accent3)">#pragma once</code>도 허용되나, 팀 내 통일 필요. 현 코드베이스는 <strong>#ifndef 방식</strong>을 표준으로 사용.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 인클루드 순서 -->
+  <section id="include">
+    <div class="section-header">
+      <div class="section-number">12</div>
+      <h2>인클루드 순서</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-struct">STRUCT</span>
+        <div class="rule-title">표준 라이브러리 → ROS2 → 외부 라이브러리 → 자체 헤더</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">인클루드는 의존성 범위를 기준으로 4단계로 그룹화하고, 각 그룹 사이에 빈 줄을 둔다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm">// 1) 표준 라이브러리 (C++ STL)</span>
+<span class="kw">#include</span> &lt;atomic&gt;
+<span class="kw">#include</span> &lt;string&gt;
+<span class="kw">#include</span> &lt;vector&gt;
+<span class="kw">#include</span> &lt;memory&gt;
+<span class="kw">#include</span> &lt;mutex&gt;
+
+<span class="cm">// 2) ROS2 메시지 / 코어</span>
+<span class="kw">#include</span> &lt;rclcpp/rclcpp.hpp&gt;
+<span class="kw">#include</span> &lt;sensor_msgs/msg/imu.hpp&gt;
+<span class="kw">#include</span> &lt;nav_msgs/msg/odometry.hpp&gt;
+
+<span class="cm">// 3) 외부 라이브러리 (Eigen, Pinocchio 등)</span>
+<span class="kw">#include</span> &lt;Eigen/Dense&gt;
+<span class="kw">#include</span> &lt;pinocchio/parsers/urdf.hpp&gt;
+
+<span class="cm">// 4) 자체(패키지 내) 헤더</span>
+<span class="kw">#include</span> <span class="st">"roboseasy_toolbox/basic_tools.hpp"</span>
+<span class="kw">#include</span> <span class="st">"roboseasy_math/math_tool.hpp"</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 스마트 포인터 -->
+  <section id="smartptr">
+    <div class="section-header">
+      <div class="section-number">13</div>
+      <h2>스마트 포인터</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STYLE</span>
+        <div class="rule-title">unique_ptr 기본 / shared_ptr는 공유 소유권이 필요한 경우만</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">Raw 포인터 사용을 금지하고 스마트 포인터를 사용한다. 단독 소유는 <code style="color:var(--accent3)">std::unique_ptr</code>, 공유 소유는 <code style="color:var(--accent3)">std::shared_ptr</code>. ROS2 내장 타입은 <code style="color:var(--accent3)">SharedPtr</code> 관용어를 따른다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm">// 단독 소유 — unique_ptr</span>
+std::unique_ptr&lt;<span class="cl">ALICE4State</span>&gt;    <span class="at">alice4_state_</span>;
+std::unique_ptr&lt;<span class="cl">LowPassFilter</span>&gt;  <span class="at">com_x_lpf_</span>;
+std::unique_ptr&lt;<span class="cl">OneEuroFilter</span>&gt;  <span class="at">dcm_x_oef_</span>;
+
+<span class="cm">// 생성 — make_unique 사용</span>
+<span class="at">alice4_state_</span> = std::make_unique&lt;<span class="cl">ALICE4State</span>&gt;();
+<span class="at">com_x_lpf_</span> = std::make_unique&lt;<span class="cl">LowPassFilter</span>&gt;(clock, cutoff);
+
+<span class="cm">// ROS2 공유 포인터</span>
+rclcpp::Publisher&lt;<span class="cl">RobotState</span>&gt;::SharedPtr <span class="at">state_publisher_</span>;
+rclcpp::Subscription&lt;<span class="cl">Imu</span>&gt;::SharedPtr     <span class="at">imu_subscriber_</span>;</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 조건부 컴파일 -->
+  <section id="conditional">
+    <div class="section-header">
+      <div class="section-number">14</div>
+      <h2>조건부 컴파일</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-struct">STRUCT</span>
+        <div class="rule-title">#if / #endif — 로봇 버전 분기에 사용, 반드시 주석 명시</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">로봇 종류나 버전별 코드 분기는 <code style="color:var(--accent3)">#if</code>로 처리한다. <code style="color:var(--accent3)">#endif</code>에 반드시 해당 조건 주석을 달고, 사용 플래그는 파일 상단에 정의한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">#define</span> <span class="cl">ALICE</span> 1  <span class="cm">// 파일 상단 또는 CMake에서 정의</span>
+
+<span class="kw">#if</span> <span class="cl">ALICE</span>
+  std::unique_ptr&lt;<span class="cl">ALICE4State</span>&gt; <span class="at">alice4_state_</span>;
+  <span class="kw">void</span> <span class="fn">UpdateJointsFromJointState</span>(<span class="cl">ALICE4State</span> &amp;state,
+                                   <span class="kw">const</span> <span class="cl">JointState</span> &amp;js);
+<span class="kw">#endif</span> <span class="cm">// ALICE</span>
+
+<span class="cm">// 구현부에서도 동일하게</span>
+<span class="kw">#if</span> <span class="cl">ALICE</span>
+  <span class="at">alice4_state_</span> = std::make_unique&lt;<span class="cl">ALICE4State</span>&gt;();
+<span class="kw">#endif</span> <span class="cm">// ALICE</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Doxygen -->
+  <section id="doxygen">
+    <div class="section-header">
+      <div class="section-number">15</div>
+      <h2>Doxygen 주석</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">DOCS</span>
+        <div class="rule-title">헤더 파일에서 /** */ 블록 주석 — @brief, @param, @return 필수</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">헤더 파일의 모든 public 클래스, 구조체, 함수에 Doxygen 주석을 작성한다. <code style="color:var(--accent3)">@brief</code>는 한 줄 요약, <code style="color:var(--accent3)">@param</code>은 파라미터 설명, <code style="color:var(--accent3)">@return</code>은 반환값을 기술한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm">/**
+ * @file roboseasy_state_estimator.hpp
+ * @brief 로봇 상태 추정기 클래스 정의
+ */</span>
+
+<span class="cm">/**
+ * @class StateEstimator
+ * @brief 각종 센서 데이터를 받아 상태를 추정하는 클래스
+ */</span>
+<span class="kw">class</span> <span class="cl">StateEstimator</span> : <span class="kw">public</span> rclcpp::<span class="cl">Node</span>
+{
+<span class="kw">public:</span>
+  <span class="cm">/**
+   * @brief 생성자
+   * @param node_name ROS2 노드명 (기본값: "roboseasy_state_estimator")
+   */</span>
+  <span class="kw">explicit</span> <span class="fn">StateEstimator</span>(<span class="kw">const</span> std::string &amp;node_name
+                          = <span class="st">"roboseasy_state_estimator"</span>);
+
+  <span class="cm">/**
+   * @brief ZMP 계산
+   * @return 반환값 없음
+   */</span>
+  <span class="kw">void</span> <span class="fn">CalculateZMP</span>();
+
+  <span class="cm">/**
+   * @brief 전체 질량 계산
+   * @return 로봇 전체 질량 (kg)
+   */</span>
+  <span class="kw">double</span> <span class="fn">GetTotalMass</span>();
+};</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 인라인 주석 -->
+  <section id="inline">
+    <div class="section-header">
+      <div class="section-number">16</div>
+      <h2>인라인 주석</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">DOCS</span>
+        <div class="rule-title">구현부 한글 주석 허용 — 알고리즘/좌표계/물리 의미 설명에 활용</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">구현 파일(.cpp) 내 인라인 주석은 한국어를 허용한다. 특히 좌표 변환, 물리 공식, 역기구학 계산 등 수식의 의미를 명확히 설명할 때 적극 활용한다. 임시 코드에는 <code style="color:var(--accent3)">// 일단주석</code> 등 추후 정리 예정임을 명시한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm">// (1) pitch *= -1 처리</span>
+pitch *= <span class="nm">-1.0</span>;
+
+<span class="cm">// (2) 점 B를 "한 번에" 계산</span>
+<span class="cm">// p_b_x = (-r + 0.064)*sin(pitch) - 0.05*cos(pitch)</span>
+<span class="kw">const double</span> p_b_x = (-r + <span class="nm">0.064</span>) * std::sin(pitch)
+                      - <span class="nm">0.05</span> * std::cos(pitch);
+
+<span class="cm">// (3) BC = BO + OC (벡터 합산)</span>
+<span class="kw">const double</span> bc_x = bo_x + oc_x;
+
+<span class="cm">// 일단주석 — 추후 position interface 활성화 시 해제</span>
+<span class="cm">// CheckAndAssign(has_position_command_interface, ...);</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 섹션 구분자 -->
+  <section id="section">
+    <div class="section-header">
+      <div class="section-number">17</div>
+      <h2>섹션 구분자 (ASCII Art)</h2>
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">DOCS</span>
+        <div class="rule-title">대형 구현 파일에서 기능 그룹을 ASCII 배너로 구분</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">500줄 이상의 구현 파일에서 기능 단위(Visual 섹션, Filter 섹션 등)를 ASCII Art 배너로 구분하면 가독성이 높아진다. 배너는 <code style="color:var(--accent3)">figlet</code>이나 직접 작성한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm">/*********************************************************
+    _____ _ _ _
+   |  ___(_) | |_ ___ _ __
+   | |_  | | | __/ _ \ '__|
+   |  _| | | | ||  __/ |
+   |_|   |_|_|\__\___|_|
+
+  *********************************************************/</span>
+
+<span class="cm">/*********************************************************
+ __     ___                 _
+ \ \   / (_)___ _   _  __ _| |
+  \ \ / /| / __| | | |/ _` | |
+   \ V / | \__ \ |_| | (_| | |
+    \_/  |_|___/\__,_|\__,_|_|
+
+  *********************************************************/</span></pre>
+        </div>
+        <div class="rule-note">
+          <strong>권장 사용 시점:</strong> 클래스 하나의 구현이 여러 .cpp로 분할되거나 한 파일 내에서 초기화 / 콜백 / 계산 / 퍼블리시 섹션이 뚜렷이 구분될 때.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

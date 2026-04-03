@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobosEasy Python 코드 규칙서</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2538;
+    --border: #2a3050;
+    --accent: #4f8ef7;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --ros: #06b6d4;
+    --text: #e2e8f0;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --code-bg: #0d1117;
+    --tag-blue: rgba(79,142,247,0.15);
+    --tag-green: rgba(16,185,129,0.15);
+    --tag-purple: rgba(124,58,237,0.15);
+    --tag-orange: rgba(245,158,11,0.15);
+    --tag-cyan: rgba(6,182,212,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 2rem;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-header .logo {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent3);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-section {
+    padding: 0.75rem 1.25rem 0.25rem;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 0.4rem 1.25rem;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg3);
+    border-left-color: var(--accent3);
+  }
+
+  .sidebar a.ros-link:hover { border-left-color: var(--ros); }
+
+  .main {
+    margin-left: 240px;
+    padding: 2.5rem 3rem 4rem;
+    max-width: 960px;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero .badge-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-py  { background: var(--tag-green); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-ros { background: var(--tag-cyan); color: var(--ros); border: 1px solid rgba(6,182,212,0.3); }
+  .badge-g   { background: var(--tag-blue); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+
+  .hero h1 { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+  .hero p  { color: var(--text2); font-size: 14px; }
+
+  .meta-row { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; color: var(--text3); }
+  .meta-item span { color: var(--text2); }
+
+  section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--accent3);
+    color: white;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-number.ros { background: var(--ros); }
+
+  h2 { font-size: 18px; font-weight: 600; color: var(--text); }
+
+  .rule-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .rule-header {
+    padding: 0.875rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .rule-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-naming { background: var(--tag-blue);   color: var(--accent);  border: 1px solid rgba(79,142,247,0.25); }
+  .tag-style  { background: var(--tag-purple);  color: #a78bfa;        border: 1px solid rgba(124,58,237,0.25); }
+  .tag-docs   { background: var(--tag-green);   color: var(--accent3); border: 1px solid rgba(16,185,129,0.25); }
+  .tag-type   { background: var(--tag-orange);  color: var(--warn);    border: 1px solid rgba(245,158,11,0.25); }
+  .tag-ros    { background: var(--tag-cyan);    color: var(--ros);     border: 1px solid rgba(6,182,212,0.25); }
+
+  .rule-title { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  .rule-body { padding: 1rem 1.25rem; }
+
+  .rule-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .code-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .code-block { border-radius: 7px; overflow: hidden; }
+
+  .code-label {
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .code-label.ok  { background: rgba(16,185,129,0.2);  color: var(--accent3); }
+  .code-label.bad { background: rgba(239,68,68,0.15);  color: #f87171; }
+  .code-label.ros { background: rgba(6,182,212,0.15);  color: var(--ros); }
+
+  pre {
+    background: var(--code-bg);
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .kw  { color: #c792ea; }
+  .fn  { color: #82aaff; }
+  .cl  { color: #ffcb6b; }
+  .cm  { color: #546e7a; font-style: italic; }
+  .st  { color: #c3e88d; }
+  .nm  { color: #f78c6c; }
+  .at  { color: #89ddff; }
+  .tp  { color: #f59e0b; }
+  .dc  { color: #80cbc4; }
+  .ro  { color: #06b6d4; }
+
+  .rule-note {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.875rem;
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 5px 5px 0;
+    font-size: 12px;
+    color: var(--text2);
+    background: rgba(16,185,129,0.07);
+  }
+
+  .rule-note.warn { border-left-color: var(--warn); background: rgba(245,158,11,0.07); }
+  .rule-note.ros  { border-left-color: var(--ros);  background: rgba(6,182,212,0.07);  }
+
+  .rule-note strong { color: var(--accent3); }
+  .rule-note.warn strong { color: var(--warn); }
+  .rule-note.ros  strong { color: var(--ros); }
+
+  .single-code { margin-top: 0.75rem; border-radius: 7px; overflow: hidden; }
+  .single-code pre { border-radius: 0; border: 1px solid var(--border); border-top: none; }
+
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 0.5rem;
+  }
+
+  .summary-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .subject { color: var(--text); font-weight: 500; }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent3);
+    border: 1px solid var(--border);
+  }
+
+  .inline-code.ros { color: var(--ros); }
+
+  .ros-banner {
+    background: linear-gradient(135deg, rgba(6,182,212,0.1) 0%, rgba(6,182,212,0.05) 100%);
+    border: 1px solid rgba(6,182,212,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .ros-banner strong { color: var(--ros); }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+    .code-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">RobosEasy</div>
+    <h2>Python 코드 규칙서</h2>
+  </div>
+
+  <div class="sidebar-section">개요</div>
+  <a href="#summary">규칙 요약표</a>
+
+  <div class="sidebar-section">네이밍 규칙</div>
+  <a href="#module">모듈 / 패키지</a>
+  <a href="#class">클래스 / 예외</a>
+  <a href="#function">함수 / 메서드</a>
+  <a href="#variable">변수 (일반)</a>
+  <a href="#boolean">Boolean (is_ / has_)</a>
+  <a href="#constant">상수</a>
+  <a href="#private">private / protected</a>
+
+  <div class="sidebar-section">타입 힌트</div>
+  <a href="#typehint-basic">기본 타입 힌트</a>
+  <a href="#typehint-complex">복합 타입 힌트</a>
+  <a href="#typehint-optional">Optional / Union</a>
+
+  <div class="sidebar-section">문서화</div>
+  <a href="#docstring">Docstring (Google Style)</a>
+  <a href="#inline-comment">인라인 주석</a>
+
+  <div class="sidebar-section">코드 포매팅</div>
+  <a href="#indent">들여쓰기</a>
+  <a href="#linelen">줄 길이</a>
+  <a href="#quote">따옴표</a>
+  <a href="#import">임포트 순서</a>
+  <a href="#blank">공백 / 빈 줄</a>
+
+  <div class="sidebar-section">ROS2 Python 패턴</div>
+  <a href="#ros-node" class="ros-link">노드 클래스 구조</a>
+  <a href="#ros-naming" class="ros-link">토픽 / 서비스 이름</a>
+  <a href="#ros-callback" class="ros-link">콜백 함수</a>
+  <a href="#ros-param" class="ros-link">파라미터 선언</a>
+  <a href="#ros-main" class="ros-link">main() 함수</a>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-py">Python 3.10+</span>
+      <span class="badge badge-ros">ROS2 Humble</span>
+      <span class="badge badge-g">Google Style Guide 기반</span>
+    </div>
+    <h1>RobosEasy Python 코드 규칙서</h1>
+    <p>Google Python Style Guide 기반 + ROS2 Python 패턴 + Type Hints 적용</p>
+    <div class="meta-row">
+      <div class="meta-item">베이스: <span>Google Python Style Guide</span></div>
+      <div class="meta-item">타입 힌트: <span>PEP 484 / PEP 526</span></div>
+      <div class="meta-item">Docstring: <span>Google Style (PEP 257)</span></div>
+      <div class="meta-item">포매터: <span>Black / YAPF 권장</span></div>
+    </div>
+  </div>
+
+  <!-- 요약표 -->
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-number">∑</div>
+      <h2>규칙 요약표</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-body" style="padding:0;">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th style="width:30%">대상</th>
+              <th style="width:22%">규칙</th>
+              <th>예시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">패키지 / 모듈</td><td>snake_case</td><td><span class="inline-code">roboseasy_utils</span>, <span class="inline-code">state_estimator.py</span></td></tr>
+            <tr><td class="subject">클래스</td><td>PascalCase</td><td><span class="inline-code">StateEstimator</span>, <span class="inline-code">JointController</span></td></tr>
+            <tr><td class="subject">예외(Exception)</td><td>PascalCase + Error</td><td><span class="inline-code">JointLimitError</span>, <span class="inline-code">SensorTimeoutError</span></td></tr>
+            <tr><td class="subject">함수 / 메서드</td><td>snake_case</td><td><span class="inline-code">calculate_zmp</span>, <span class="inline-code">get_joint_state</span></td></tr>
+            <tr><td class="subject">변수 (일반)</td><td>snake_case</td><td><span class="inline-code">joint_position</span>, <span class="inline-code">control_time</span></td></tr>
+            <tr><td class="subject">Boolean 변수</td><td>is_ / has_ 접두사</td><td><span class="inline-code">is_active</span>, <span class="inline-code">has_velocity_interface</span></td></tr>
+            <tr><td class="subject">상수</td><td>UPPER_SNAKE_CASE</td><td><span class="inline-code">GRAVITY_ACCEL</span>, <span class="inline-code">MAX_JOINT_VEL</span></td></tr>
+            <tr><td class="subject">protected 멤버</td><td>_single_leading</td><td><span class="inline-code">_joint_names</span>, <span class="inline-code">_timer</span></td></tr>
+            <tr><td class="subject">private 멤버</td><td>__double_leading</td><td><span class="inline-code">__callback_group</span></td></tr>
+            <tr><td class="subject">ROS2 노드 클래스</td><td>PascalCase + Node</td><td><span class="inline-code ros">StateEstimatorNode</span>, <span class="inline-code ros">JointControllerNode</span></td></tr>
+            <tr><td class="subject">ROS2 토픽/서비스</td><td>snake_case 슬래시 경로</td><td><span class="inline-code ros">/roboseasy/joint_state</span></td></tr>
+            <tr><td class="subject">ROS2 콜백 함수</td><td>snake_case + _callback</td><td><span class="inline-code ros">imu_callback</span>, <span class="inline-code ros">timer_callback</span></td></tr>
+            <tr><td class="subject">파일명</td><td>snake_case + .py</td><td><span class="inline-code">joint_controller.py</span></td></tr>
+            <tr><td class="subject">들여쓰기</td><td>탭(Tab) 1개</td><td><span class="inline-code">insertSpaces: false, tabSize: 4</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 모듈 / 패키지 -->
+  <section id="module">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>모듈 / 패키지</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">snake_case — 짧고 소문자, 하이픈(-) 사용 금지</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모든 Python 파일명과 패키지명은 소문자 snake_case를 사용한다. 하이픈(-)은 임포트가 불가능하므로 절대 사용하지 않는다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre>roboseasy_utils.py
+state_estimator.py
+joint_controller.py
+ros2_sensor_bridge.py</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre>RoboseasyUtils.py   <span class="cm"># PascalCase X</span>
+state-estimator.py  <span class="cm"># 하이픈 X</span>
+StateEstimator.py   <span class="cm"># PascalCase X</span>
+se.py               <span class="cm"># 의미 없는 약어 X</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 클래스 -->
+  <section id="class">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>클래스 / 예외(Exception)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">클래스: PascalCase / 예외: PascalCase + Error 접미사</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">클래스는 PascalCase. 사용자 정의 예외 클래스는 반드시 <code style="color:var(--accent3)">Error</code>로 끝나야 한다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">class</span> <span class="cl">StateEstimator</span>:
+    <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="cl">JointController</span>:
+    <span class="kw">pass</span>
+
+<span class="cm"># 예외 클래스</span>
+<span class="kw">class</span> <span class="cl">JointLimitError</span>(<span class="cl">Exception</span>):
+    <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="cl">SensorTimeoutError</span>(<span class="cl">RuntimeError</span>):
+    <span class="kw">pass</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="kw">class</span> <span class="cl">state_estimator</span>:   <span class="cm"># snake_case X</span>
+    <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="cl">jointcontroller</span>:  <span class="cm"># 소문자 X</span>
+    <span class="kw">pass</span>
+
+<span class="cm"># 예외 클래스</span>
+<span class="kw">class</span> <span class="cl">JointLimit</span>(<span class="cl">Exception</span>):  <span class="cm"># Error 없음 X</span>
+    <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="cl">SensorException</span>:  <span class="cm"># Exception 접미사 X</span>
+    <span class="kw">pass</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 함수 -->
+  <section id="function">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>함수 / 메서드</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">snake_case — 동사로 시작, 반환 타입 힌트 필수</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모든 함수와 메서드는 snake_case. 동작을 명확히 표현하는 동사로 시작한다. 모든 함수에 파라미터 타입 힌트와 반환 타입 힌트를 작성한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">def</span> <span class="fn">calculate_zmp</span>(
+    force_z: <span class="tp">float</span>,
+    cop_x: <span class="tp">float</span>,
+    cop_y: <span class="tp">float</span>,
+) -> <span class="tp">tuple</span>[<span class="tp">float</span>, <span class="tp">float</span>]:
+    ...
+
+<span class="kw">def</span> <span class="fn">get_joint_position</span>(joint_name: <span class="tp">str</span>) -> <span class="tp">float</span>:
+    ...
+
+<span class="kw">def</span> <span class="fn">update_state</span>(timestamp: <span class="tp">float</span>) -> <span class="tp">None</span>:
+    ...
+
+<span class="kw">def</span> <span class="fn">is_foot_on_ground</span>(threshold: <span class="tp">float</span> = <span class="nm">10.0</span>) -> <span class="tp">bool</span>:
+    ...</pre>
+        </div>
+        <div class="code-grid" style="margin-top:0.75rem;">
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 네이밍</div>
+            <pre><span class="kw">def</span> <span class="fn">CalculateZMP</span>():   <span class="cm"># PascalCase X</span>
+    ...
+
+<span class="kw">def</span> <span class="fn">zmp</span>():             <span class="cm"># 의미 없는 약어 X</span>
+    ...
+
+<span class="kw">def</span> <span class="fn">doUpdate</span>():        <span class="cm"># camelCase X</span>
+    ...</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 타입 힌트 누락</div>
+            <pre><span class="kw">def</span> <span class="fn">calculate_zmp</span>(force_z, cop_x):
+    <span class="cm"># 타입 힌트 없음 X</span>
+    ...
+
+<span class="kw">def</span> <span class="fn">get_joint_position</span>(name):
+    <span class="cm"># 반환 타입 없음 X</span>
+    ...</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 변수 -->
+  <section id="variable">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>변수 (일반)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">snake_case — 의미 있는 이름, 한 글자 변수 금지 (루프 인덱스 제외)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모든 변수는 소문자 snake_case. 단일 문자 변수는 루프 인덱스(<code style="color:var(--accent3)">i</code>, <code style="color:var(--accent3)">j</code>)와 수학 표기(<code style="color:var(--accent3)">x</code>, <code style="color:var(--accent3)">y</code>) 예외를 제외하고 사용 금지.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre>joint_position = <span class="nm">0.0</span>
+control_time = <span class="nm">0.01</span>
+gravity_accel = <span class="nm">9.80665</span>
+imu_data = <span class="cl">ImuData</span>()
+
+<span class="cm"># 루프 인덱스는 예외 허용</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(num_joints):
+    ...
+
+<span class="cm"># 수학 표기 예외 허용</span>
+x, y, z = position</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre>jp = <span class="nm">0.0</span>         <span class="cm"># 약어 X</span>
+CT = <span class="nm">0.01</span>         <span class="cm"># 대문자 X (상수 아님)</span>
+JointPos = <span class="nm">0.0</span>   <span class="cm"># PascalCase X</span>
+jointPos = <span class="nm">0.0</span>   <span class="cm"># camelCase X</span>
+
+<span class="cm"># 의미 없는 단문자 변수 X</span>
+a = get_imu_data()
+b = process(a)</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boolean -->
+  <section id="boolean">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>Boolean 변수 ⭐</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">반드시 <code style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent3)">is_</code> 또는 <code style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent3)">has_</code> 접두사로 시작</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">
+          <code style="color:var(--accent3)">bool</code> 타입 변수는 반드시 <code style="color:var(--accent3)">is_</code> 또는 <code style="color:var(--accent3)">has_</code> 접두사로 시작한다.
+          변수명만 보고도 <code style="color:var(--accent3)">True/False</code> 값임을 즉시 인식할 수 있어야 한다.
+        </p>
+        <div style="background:var(--bg3); border-radius:8px; padding:0.875rem 1.25rem; margin-bottom:0.875rem; border:1px solid var(--border);">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--accent3); margin-bottom:0.35rem; font-family:'JetBrains Mono',monospace;">is_</div>
+              <div style="font-size:12px; color:var(--text2);">상태 / 조건 여부 — "~인가?"</div>
+            </div>
+            <div>
+              <div style="font-size:12px; font-weight:700; color:var(--warn); margin-bottom:0.35rem; font-family:'JetBrains Mono',monospace;">has_</div>
+              <div style="font-size:12px; color:var(--text2);">기능 / 데이터 보유 여부 — "~를 가졌는가?"</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">class</span> <span class="cl">StateEstimatorNode</span>(<span class="cl">Node</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+        self.is_active: <span class="tp">bool</span> = <span class="kw">False</span>
+        self.is_initialized: <span class="tp">bool</span> = <span class="kw">False</span>
+        self.is_foot_contact: <span class="tp">bool</span> = <span class="kw">False</span>
+        self.has_velocity_data: <span class="tp">bool</span> = <span class="kw">False</span>
+        self.has_imu_subscriber: <span class="tp">bool</span> = <span class="kw">False</span>
+
+    <span class="kw">def</span> <span class="fn">process</span>(self) -> <span class="tp">None</span>:
+        <span class="cm"># 로컬 변수도 동일 규칙</span>
+        is_valid = <span class="kw">not</span> self._queue.empty()
+        has_data = <span class="fn">len</span>(self._buffer) > <span class="nm">0</span>
+        <span class="kw">if</span> is_valid <span class="kw">and</span> has_data:
+            self._update()</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="kw">class</span> <span class="cl">BadNode</span>(<span class="cl">Node</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+        self.active = <span class="kw">False</span>            <span class="cm"># is_ 없음 X</span>
+        self.velocity_data = <span class="kw">False</span>    <span class="cm"># has_ 없음 X</span>
+        self.bActive = <span class="kw">True</span>            <span class="cm"># 헝가리안 b X</span>
+        self.foot_contact_flag = <span class="kw">True</span>  <span class="cm"># flag 접미사 X</span>
+        self.check = <span class="kw">True</span>              <span class="cm"># 의미 불명확 X</span>
+        self.status = <span class="kw">False</span>            <span class="cm"># 타입 불분명 X</span></pre>
+          </div>
+        </div>
+        <div class="rule-note" style="margin-top:0.75rem;">
+          <strong>한 눈에 확인:</strong>&nbsp;
+          <code style="font-family:'JetBrains Mono',monospace; font-size:11px;">if is_foot_contact and has_velocity_data:</code>
+          &nbsp;— 타입 선언 없이도 모두 <code style="color:var(--accent3)">bool</code>임을 즉시 인식.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 상수 -->
+  <section id="constant">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>상수</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">UPPER_SNAKE_CASE — 모듈 최상단에 선언, 타입 힌트 포함</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모듈 레벨 상수는 UPPER_SNAKE_CASE로 선언한다. <code style="color:var(--accent3)">Final</code> 타입 힌트를 사용해 변경 불가임을 명시하는 것을 권장한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">from</span> typing <span class="kw">import</span> <span class="tp">Final</span>
+
+GRAVITY_ACCEL: <span class="tp">Final</span>[<span class="tp">float</span>] = <span class="nm">9.80665</span>
+MAX_JOINT_VEL: <span class="tp">Final</span>[<span class="tp">float</span>] = <span class="nm">3.14</span>
+DEFAULT_CONTROL_HZ: <span class="tp">Final</span>[<span class="tp">int</span>] = <span class="nm">100</span>
+ROBOT_NAME: <span class="tp">Final</span>[<span class="tp">str</span>] = <span class="st">'roboseasy_edie'</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- private / protected -->
+  <section id="private">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>private / protected 멤버</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">protected: 밑줄 1개(_) / private: 밑줄 2개(__)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">외부에서 직접 접근하지 않아야 하는 멤버는 <code style="color:var(--accent3)">_</code>로 시작한다. 서브클래스에서도 접근하면 안 되는 멤버는 <code style="color:var(--accent3)">__</code>로 시작한다 (name mangling 적용).</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">class</span> <span class="cl">StateEstimatorNode</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+        <span class="cm"># protected — 서브클래스에서 접근 가능</span>
+        self._joint_names: <span class="tp">list</span>[<span class="tp">str</span>] = []
+        self._control_time: <span class="tp">float</span> = <span class="nm">0.01</span>
+        self._is_initialized: <span class="tp">bool</span> = <span class="kw">False</span>
+
+        <span class="cm"># private — 외부/서브클래스 모두 접근 불가</span>
+        self.__callback_group = <span class="cl">ReentrantCallbackGroup</span>()
+        self.__timer = <span class="kw">None</span></pre>
+        </div>
+        <div class="rule-note">
+          <strong>Google Style 권고:</strong> Python에는 진정한 private이 없으므로 <strong>_single_underscore</strong>를 기본으로 사용하고, name mangling이 꼭 필요한 경우에만 <strong>__double</strong>을 사용한다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 타입 힌트 기본 -->
+  <section id="typehint-basic">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>타입 힌트 — 기본</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-type">TYPE</span>
+        <div class="rule-title">모든 함수 파라미터와 반환값에 타입 힌트 필수 (PEP 484)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">Google Style Guide는 타입 힌트 사용을 강력 권장한다. Python 3.10+에서는 <code style="color:var(--accent3)">list[str]</code>, <code style="color:var(--accent3)">tuple[float, ...]</code>처럼 내장 타입을 직접 사용한다 (typing 모듈의 <code style="color:var(--accent3)">List</code>, <code style="color:var(--accent3)">Tuple</code> 불필요).</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD — Python 3.10+ 내장 타입 사용</div>
+          <pre><span class="cm"># 모듈 레벨 함수</span>
+<span class="kw">def</span> <span class="fn">get_joint_positions</span>(
+    joint_names: <span class="tp">list</span>[<span class="tp">str</span>],
+    timestamp: <span class="tp">float</span>,
+) -> <span class="tp">dict</span>[<span class="tp">str</span>, <span class="tp">float</span>]:
+    ...
+
+
+<span class="cm"># 클래스 내부 인스턴스 변수 타입 힌트</span>
+<span class="kw">class</span> <span class="cl">JointController</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+        self.joint_names: <span class="tp">list</span>[<span class="tp">str</span>] = []
+        self.positions: <span class="tp">dict</span>[<span class="tp">str</span>, <span class="tp">float</span>] = {}
+        self.control_hz: <span class="tp">int</span> = <span class="nm">100</span>
+        self.is_active: <span class="tp">bool</span> = <span class="kw">False</span>
+
+    <span class="kw">def</span> <span class="fn">publish_state</span>(self) -> <span class="tp">None</span>:  <span class="cm"># 반환 없는 메서드</span>
+        ...
+
+    <span class="kw">def</span> <span class="fn">get_all_positions</span>(self) -> <span class="tp">dict</span>[<span class="tp">str</span>, <span class="tp">float</span>]:
+        ...</pre>
+        </div>
+        <div class="code-grid" style="margin-top:0.75rem;">
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 구버전 typing</div>
+            <pre><span class="kw">from</span> typing <span class="kw">import</span> List, Dict, Tuple
+
+<span class="kw">def</span> <span class="fn">get_positions</span>(
+    names: <span class="tp">List</span>[<span class="tp">str</span>],   <span class="cm"># Python 3.9+ 불필요</span>
+) -> <span class="tp">Dict</span>[<span class="tp">str</span>, <span class="tp">float</span>]: <span class="cm"># dict[str,float] 사용</span>
+    ...</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 타입 힌트 누락</div>
+            <pre><span class="kw">def</span> <span class="fn">get_positions</span>(names):
+    <span class="cm"># 파라미터 타입 없음 X</span>
+    ...
+    <span class="cm"># 반환 타입 없음 X</span>
+
+self.joint_names = []  <span class="cm"># 타입 힌트 없음 X</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 타입 힌트 복합 -->
+  <section id="typehint-complex">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>타입 힌트 — 복합 타입</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-type">TYPE</span>
+        <div class="rule-title">tuple / list / dict / Callable — 원소 타입까지 명시</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">복합 타입은 원소 타입까지 구체적으로 명시한다. <code style="color:var(--accent3)">np.ndarray</code>는 <code style="color:var(--accent3)">npt.NDArray</code>로 구체화한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> numpy.typing <span class="kw">as</span> npt
+<span class="kw">from</span> collections.abc <span class="kw">import</span> <span class="tp">Callable</span>
+
+<span class="cm"># tuple — 고정 길이는 원소 타입 모두 명시</span>
+<span class="kw">def</span> <span class="fn">get_cop</span>() -> <span class="tp">tuple</span>[<span class="tp">float</span>, <span class="tp">float</span>]:
+    <span class="kw">return</span> <span class="nm">0.0</span>, <span class="nm">0.0</span>
+
+<span class="cm"># 가변 길이 tuple</span>
+<span class="kw">def</span> <span class="fn">get_all_positions</span>() -> <span class="tp">tuple</span>[<span class="tp">float</span>, ...]:
+    ...
+
+<span class="cm"># numpy ndarray</span>
+<span class="kw">def</span> <span class="fn">calculate_jacobian</span>(
+    q: <span class="tp">npt</span>.NDArray[np.float64],
+) -> <span class="tp">npt</span>.NDArray[np.float64]:
+    ...
+
+<span class="cm"># Callable</span>
+<span class="kw">def</span> <span class="fn">register_callback</span>(
+    cb: <span class="tp">Callable</span>[[<span class="tp">float</span>], <span class="tp">None</span>],
+) -> <span class="tp">None</span>:
+    ...</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Optional / Union -->
+  <section id="typehint-optional">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>타입 힌트 — Optional / Union</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-type">TYPE</span>
+        <div class="rule-title">Python 3.10+ 에서는 X | None, X | Y 문법 사용</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">Python 3.10+에서는 <code style="color:var(--accent3)">Optional[X]</code> 대신 <code style="color:var(--accent3)">X | None</code>, <code style="color:var(--accent3)">Union[X, Y]</code> 대신 <code style="color:var(--accent3)">X | Y</code>를 사용한다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — Python 3.10+</div>
+            <pre><span class="cm"># 함수 반환값</span>
+<span class="kw">def</span> <span class="fn">find_joint</span>(
+    name: <span class="tp">str</span>,
+) -> <span class="tp">float</span> | <span class="tp">None</span>:
+    ...
+
+<span class="kw">def</span> <span class="fn">set_target</span>(
+    value: <span class="tp">int</span> | <span class="tp">float</span>,
+) -> <span class="tp">None</span>:
+    ...
+
+<span class="cm"># 클래스 인스턴스 변수</span>
+<span class="kw">class</span> <span class="cl">StateEstimatorNode</span>(<span class="cl">Node</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+        self._timer: rclpy.timer.<span class="cl">Timer</span> | <span class="tp">None</span> = <span class="kw">None</span>
+        self._last_imu: <span class="cl">Imu</span> | <span class="tp">None</span> = <span class="kw">None</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 구버전 Optional</div>
+            <pre><span class="kw">from</span> typing <span class="kw">import</span> Optional, Union
+
+<span class="kw">def</span> <span class="fn">find_joint</span>(
+    name: <span class="tp">str</span>,
+) -> <span class="tp">Optional</span>[<span class="tp">float</span>]:  <span class="cm"># X | None 사용</span>
+    ...
+
+<span class="kw">def</span> <span class="fn">set_target</span>(
+    value: <span class="tp">Union</span>[<span class="tp">int</span>, <span class="tp">float</span>],  <span class="cm"># X | Y 사용</span>
+) -> <span class="tp">None</span>:
+    ...</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Docstring -->
+  <section id="docstring">
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <h2>Docstring — Google Style</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">DOCS</span>
+        <div class="rule-title">Args / Returns / Raises / Example 섹션 구조 사용</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모든 public 모듈, 클래스, 함수에 Docstring을 작성한다. Google Style은 들여쓰기 기반의 섹션 구조를 사용한다. 한국어 작성을 허용한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD — Google Style Docstring</div>
+          <pre><span class="kw">def</span> <span class="fn">calculate_dcm</span>(
+    com_pos: <span class="tp">tuple</span>[<span class="tp">float</span>, <span class="tp">float</span>],
+    com_vel: <span class="tp">tuple</span>[<span class="tp">float</span>, <span class="tp">float</span>],
+    omega: <span class="tp">float</span>,
+) -> <span class="tp">tuple</span>[<span class="tp">float</span>, <span class="tp">float</span>]:
+    <span class="dc">"""DCM (Divergent Component of Motion) 을 계산한다.
+
+    LIPM 기반으로 발산 운동 성분을 계산하여 균형 제어에 사용한다.
+
+    Args:
+        com_pos: CoM 위치 (x, y) [m]
+        com_vel: CoM 속도 (vx, vy) [m/s]
+        omega: LIPM 고유 주파수 sqrt(g/h) [rad/s]
+
+    Returns:
+        DCM 위치 (xi_x, xi_y) [m] tuple 형태로 반환.
+
+    Raises:
+        ValueError: omega가 0 이하인 경우.
+
+    Example:
+        >>> dcm = calculate_dcm((0.0, 0.0), (0.1, 0.0), 3.13)
+        >>> print(dcm)
+        (0.031, 0.0)
+    """</span>
+    <span class="kw">if</span> omega <= <span class="nm">0</span>:
+        <span class="kw">raise</span> <span class="cl">ValueError</span>(<span class="st">f'omega must be positive, got </span><span class="nm">{omega}</span><span class="st">'</span>)
+    xi_x = com_pos[<span class="nm">0</span>] + com_vel[<span class="nm">0</span>] / omega
+    xi_y = com_pos[<span class="nm">1</span>] + com_vel[<span class="nm">1</span>] / omega
+    <span class="kw">return</span> xi_x, xi_y</pre>
+        </div>
+        <div class="rule-note">
+          <strong>클래스 Docstring:</strong> 클래스 수준에서는 <code style="color:var(--accent3)">Attributes:</code> 섹션으로 주요 멤버를 기술한다. <code style="color:var(--accent3)">__init__</code>의 파라미터는 클래스 Docstring에 통합하거나 <code style="color:var(--accent3)">__init__</code>에 별도 작성한다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 인라인 주석 -->
+  <section id="inline-comment">
+    <div class="section-header">
+      <div class="section-number">12</div>
+      <h2>인라인 주석</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">DOCS</span>
+        <div class="rule-title"># 뒤 공백 1개 / 코드와 같은 줄은 공백 2개 후 #</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">인라인 주석은 코드 로직을 설명하되, <em>코드 자체가 자명한 경우</em> 생략한다. 한국어 주석을 허용한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm"># CoM 속도를 저역통과 필터로 노이즈 제거</span>
+com_vel_x = self._lpf_x.filter(raw_vel_x)
+
+control_time = <span class="nm">0.01</span>  <span class="cm"># 100 Hz 제어 주기 [s]</span>
+
+<span class="cm"># ZMP가 지지 다각형 밖에 있을 때 균형 복구 트리거</span>
+<span class="kw">if</span> <span class="fn">abs</span>(zmp_x) > support_polygon_x:
+    self._trigger_recovery()
+
+<span class="cm"># TODO: 발목 토크 피드포워드 항 추가 예정</span>
+<span class="cm"># FIXME: 한 발 지지 시 CoP 계산 오차 확인 필요</span></pre>
+        </div>
+        <div class="rule-note warn">
+          <strong>주의:</strong> 코드를 그대로 번역하는 주석은 금지. <code style="color:var(--warn)">x = x + 1  # x에 1을 더함</code> — 이런 주석은 오히려 가독성을 해친다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 들여쓰기 -->
+  <section id="indent">
+    <div class="section-header">
+      <div class="section-number">13</div>
+      <h2>들여쓰기</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STYLE</span>
+        <div class="rule-title">탭(Tab) 1개 — 공백(Space) 혼용 금지</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">탭 1개로 들여쓰기한다. 공백과 탭을 <strong style="color:var(--danger)">절대 혼용하지 않는다</strong> (Python은 혼용 시 <code style="color:var(--danger)">TabError</code> 발생). 에디터 탭 너비는 4로 통일하는 것을 권장한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD — 탭(Tab) 들여쓰기</div>
+          <pre><span class="kw">class</span> <span class="cl">StateEstimatorNode</span>(<span class="cl">Node</span>):
+
+	<span class="kw">def</span> <span class="fn">initialize_filters</span>(
+		self,
+		control_hz: <span class="tp">int</span>,
+		cutoff_freq: <span class="tp">float</span>,
+		filter_type: <span class="tp">str</span> = <span class="st">'lpf'</span>,
+	) -> <span class="tp">None</span>:
+		self._lpf = <span class="cl">LowPassFilter</span>(
+			clock=self.get_clock(),
+			cutoff=cutoff_freq,
+		)
+
+	<span class="kw">def</span> <span class="fn">calculate_zmp</span>(
+		self,
+		force_z: <span class="tp">float</span>,
+		cop_x: <span class="tp">float</span>,
+	) -> <span class="tp">tuple</span>[<span class="tp">float</span>, <span class="tp">float</span>]:
+		zmp_x = cop_x - (force_z * self._height)
+		<span class="kw">return</span> zmp_x, <span class="nm">0.0</span>
+
+
+<span class="cm"># ❌ BAD — 공백과 탭 혼용 (TabError 발생)</span>
+<span class="kw">class</span> <span class="cl">BadNode</span>(<span class="cl">Node</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:  <span class="cm"># 공백 4개</span>
+	    self.name = <span class="st">'bad'</span>         <span class="cm"># 탭 + 공백 혼용 X</span>
+
+<span class="cm"># ❌ BAD — 2칸 공백</span>
+<span class="kw">class</span> <span class="cl">BadNode2</span>(<span class="cl">Node</span>):
+  <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:  <span class="cm"># 2칸 공백 X</span>
+    self.name = <span class="st">'bad'</span></pre>
+        </div>
+        <div class="rule-note warn">
+          <strong>에디터 설정 통일:</strong> VSCode 기준 <code style="color:var(--warn)">editor.insertSpaces: false</code>, <code style="color:var(--warn)">editor.tabSize: 4</code> 로 설정. <code style="color:var(--warn)">.editorconfig</code> 파일을 프로젝트 루트에 두면 팀 전체에 자동 강제 적용된다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 줄 길이 -->
+  <section id="linelen">
+    <div class="section-header">
+      <div class="section-number">14</div>
+      <h2>줄 길이</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STYLE</span>
+        <div class="rule-title">한 줄 최대 80자 — 괄호로 줄 바꿈</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">한 줄은 최대 80자를 넘지 않는다 (Google Style). 초과 시 괄호로 묶어 줄 바꿈한다. 백슬래시(<code style="color:var(--accent3)">\</code>) 줄 바꿈은 지양한다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — 괄호 줄 바꿈</div>
+            <pre><span class="cm"># 함수 호출</span>
+result = <span class="fn">calculate_dcm</span>(
+    com_pos=self._com_position,
+    com_vel=self._com_velocity,
+    omega=self._omega,
+)
+
+<span class="cm"># 조건문</span>
+<span class="kw">if</span> (self.is_foot_contact
+        <span class="kw">and</span> self.has_velocity_data
+        <span class="kw">and</span> self._is_initialized):
+    self._update_state()</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 80자 초과</div>
+            <pre><span class="cm"># 한 줄에 너무 많은 내용 X</span>
+result = <span class="fn">calculate_dcm</span>(com_pos=self._com_position, com_vel=self._com_velocity, omega=self._omega)
+
+<span class="cm"># 백슬래시 줄 바꿈 지양</span>
+<span class="kw">if</span> self.is_foot_contact \
+        <span class="kw">and</span> self.has_velocity_data:
+    ...</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 따옴표 -->
+  <section id="quote">
+    <div class="section-header">
+      <div class="section-number">15</div>
+      <h2>따옴표</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STYLE</span>
+        <div class="rule-title">작은따옴표(') 기본 — f-string은 큰따옴표(") 허용</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">Google Style은 작은따옴표를 기본으로 사용한다. f-string에서 내부 표현식에 따옴표가 필요할 경우 큰따옴표를 사용할 수 있다. 단, 팀 내 통일이 가장 중요하다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre>node_name = <span class="st">'state_estimator'</span>
+topic = <span class="st">'/roboseasy/joint_state'</span>
+
+<span class="cm"># f-string 내부 표현식에 따옴표 필요 시</span>
+msg = <span class="st">f'joint </span><span class="nm">{joint["name"]}</span><span class="st"> error'</span>
+
+<span class="cm"># 멀티라인 문자열</span>
+description = (
+    <span class="st">'RobosEasy state estimator node. '</span>
+    <span class="st">'Subscribes to IMU and joint states.'</span>
+)</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 혼용 X</div>
+            <pre>node_name = <span class="st">"state_estimator"</span>   <span class="cm"># 큰따옴표 혼용</span>
+topic = <span class="st">'/roboseasy/joint_state'</span>
+
+<span class="cm"># 같은 파일에서 혼용 금지</span>
+name1 = <span class="st">'edie'</span>
+name2 = <span class="st">"alice"</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 임포트 -->
+  <section id="import">
+    <div class="section-header">
+      <div class="section-number">16</div>
+      <h2>임포트 순서</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STYLE</span>
+        <div class="rule-title">표준 라이브러리 → 서드파티 → ROS2 → 로컬, 그룹 사이 빈 줄</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">임포트는 4개 그룹으로 구분하며 각 그룹 사이에 빈 줄을 둔다. <code style="color:var(--accent3)">from X import *</code> 와일드카드 임포트는 금지한다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm"># ── 1) Python 표준 라이브러리 ─────────────────────────</span>
+<span class="kw">from</span> __future__ <span class="kw">import</span> annotations
+<span class="kw">import</span> math
+<span class="kw">from</span> collections.abc <span class="kw">import</span> <span class="tp">Callable</span>
+<span class="kw">from</span> typing <span class="kw">import</span> <span class="tp">Final</span>
+
+<span class="cm"># ── 2) 서드파티 라이브러리 ────────────────────────────</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> numpy.typing <span class="kw">as</span> npt
+
+<span class="cm"># ── 3) ROS2 관련 ──────────────────────────────────────</span>
+<span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> <span class="cl">Node</span>
+<span class="kw">from</span> rclpy.qos <span class="kw">import</span> QoSProfile
+<span class="kw">from</span> sensor_msgs.msg <span class="kw">import</span> <span class="cl">Imu</span>, <span class="cl">JointState</span>
+<span class="kw">from</span> std_msgs.msg <span class="kw">import</span> <span class="cl">Float64MultiArray</span>
+
+<span class="cm"># ── 4) 로컬 (자체 패키지) ─────────────────────────────</span>
+<span class="kw">from</span> roboseasy_utils.filters <span class="kw">import</span> <span class="cl">LowPassFilter</span>
+<span class="kw">from</span> roboseasy_msgs.msg <span class="kw">import</span> <span class="cl">RobotState</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 공백 / 빈 줄 -->
+  <section id="blank">
+    <div class="section-header">
+      <div class="section-number">17</div>
+      <h2>공백 / 빈 줄</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STYLE</span>
+        <div class="rule-title">클래스 전후 2줄 / 메서드 사이 1줄 / 연산자 주변 공백 1개</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm"># ✅ GOOD</span>
+
+
+<span class="kw">class</span> <span class="cl">StateEstimatorNode</span>(<span class="cl">Node</span>):  <span class="cm"># ← 위에 빈 줄 2개</span>
+    <span class="dc">"""상태 추정 노드."""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:    <span class="cm"># ← 클래스 내 첫 메서드 위 빈 줄 1개</span>
+        self.is_active: <span class="tp">bool</span> = <span class="kw">False</span>
+
+    <span class="kw">def</span> <span class="fn">timer_callback</span>(self) -> <span class="tp">None</span>:  <span class="cm"># ← 메서드 사이 빈 줄 1개</span>
+        self._update()
+
+    <span class="kw">def</span> <span class="fn">imu_callback</span>(self, msg: <span class="cl">Imu</span>) -> <span class="tp">None</span>:  <span class="cm"># ← 메서드 사이 빈 줄 1개</span>
+        self._imu_queue.append(msg)
+
+
+<span class="kw">def</span> <span class="fn">main</span>() -> <span class="tp">None</span>:  <span class="cm"># ← 최상위 함수 위 빈 줄 2개</span>
+    ...
+
+
+<span class="cm"># ✅ 연산자 주변 공백 1개</span>
+x = y + z
+result = a * b + c * d
+
+
+<span class="cm"># ❌ BAD — 빈 줄 없음</span>
+<span class="kw">class</span> <span class="cl">BadNode</span>(<span class="cl">Node</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+        <span class="kw">pass</span>
+    <span class="kw">def</span> <span class="fn">timer_callback</span>(self) -> <span class="tp">None</span>:  <span class="cm"># 빈 줄 없음 X</span>
+        <span class="kw">pass</span>
+    <span class="kw">def</span> <span class="fn">imu_callback</span>(self, msg: <span class="cl">Imu</span>) -> <span class="tp">None</span>:  <span class="cm"># 빈 줄 없음 X</span>
+        <span class="kw">pass</span>
+<span class="kw">def</span> <span class="fn">main</span>() -> <span class="tp">None</span>:  <span class="cm"># 클래스 뒤 빈 줄 없음 X</span>
+    <span class="kw">pass</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ROS2 섹션 ===== -->
+
+  <section id="ros-node">
+    <div class="section-header">
+      <div class="section-number ros">R1</div>
+      <h2>ROS2 — 노드 클래스 구조</h2>
+    </div>
+
+    <div class="ros-banner">
+      <strong>ROS2 Python 패턴</strong>은 위의 Python 네이밍 규칙을 따르되, ROS2 특유의 구조적 컨벤션을 추가로 적용한다.
+    </div>
+
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">ROS2</span>
+        <div class="rule-title">클래스명: PascalCase + Node 접미사 / Node 상속 / __init__ 구조화</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">ROS2 노드 클래스는 <code style="color:var(--ros)">rclpy.node.Node</code>를 상속하며, 클래스명은 기능을 설명하는 PascalCase + <code style="color:var(--ros)">Node</code> 접미사를 붙인다. <code style="color:var(--ros)">__init__</code> 내부는 선언부 → 구독/발행 → 타이머 순서로 작성한다.</p>
+        <div class="single-code">
+          <div class="code-label ros">✓ ROS2 GOOD</div>
+          <pre><span class="kw">from</span> __future__ <span class="kw">import</span> annotations
+
+<span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node <span class="kw">import</span> <span class="cl">Node</span>
+<span class="kw">from</span> sensor_msgs.msg <span class="kw">import</span> <span class="cl">Imu</span>, <span class="cl">JointState</span>
+<span class="kw">from</span> roboseasy_msgs.msg <span class="kw">import</span> <span class="cl">RobotState</span>
+
+
+<span class="kw">class</span> <span class="cl">StateEstimatorNode</span>(<span class="cl">Node</span>):  <span class="cm"># PascalCase + Node</span>
+    <span class="dc">"""로봇 상태 추정 노드.
+
+    IMU 및 관절 상태를 구독하여 로봇 상태를 추정하고 퍼블리시한다.
+    """</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+        <span class="fn">super</span>().__init__(<span class="st">'state_estimator_node'</span>)
+
+        <span class="cm"># ── 1) 파라미터 선언 ──────────────────────────────</span>
+        self.<span class="fn">declare_parameter</span>(<span class="st">'control_hz'</span>, <span class="nm">100</span>)
+        self._control_hz: <span class="tp">int</span> = (
+            self.<span class="fn">get_parameter</span>(<span class="st">'control_hz'</span>)
+            .<span class="fn">get_parameter_value</span>()
+            .integer_value
+        )
+
+        <span class="cm"># ── 2) 내부 상태 변수 ─────────────────────────────</span>
+        self._is_initialized: <span class="tp">bool</span> = <span class="kw">False</span>
+        self._has_imu_data: <span class="tp">bool</span> = <span class="kw">False</span>
+        self._joint_names: <span class="tp">list</span>[<span class="tp">str</span>] = []
+
+        <span class="cm"># ── 3) Subscriber / Publisher ─────────────────────</span>
+        self._imu_sub = self.<span class="fn">create_subscription</span>(
+            <span class="cl">Imu</span>,
+            <span class="st">'/roboseasy/imu/data'</span>,
+            self.imu_callback,
+            <span class="nm">10</span>,
+        )
+        self._state_pub = self.<span class="fn">create_publisher</span>(
+            <span class="cl">RobotState</span>,
+            <span class="st">'/roboseasy/robot_state'</span>,
+            <span class="nm">10</span>,
+        )
+
+        <span class="cm"># ── 4) Timer ──────────────────────────────────────</span>
+        self._timer = self.<span class="fn">create_timer</span>(
+            <span class="nm">1.0</span> / self._control_hz,
+            self.timer_callback,
+        )</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROS2 네이밍 -->
+  <section id="ros-naming">
+    <div class="section-header">
+      <div class="section-number ros">R2</div>
+      <h2>ROS2 — 토픽 / 서비스 / 액션 이름</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">ROS2</span>
+        <div class="rule-title">/namespace/node_name/topic_name 형식 — snake_case 슬래시 경로</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">토픽/서비스/액션 이름은 슬래시(<code style="color:var(--ros)">/</code>) 구분자 경로로 표현하며, 각 세그먼트는 snake_case를 사용한다.</p>
+        <div class="single-code">
+          <div class="code-label ros">✓ ROS2 GOOD</div>
+          <pre><span class="cm"># 토픽 이름 상수로 선언 (파일 상단)</span>
+TOPIC_IMU: <span class="tp">Final</span>[<span class="tp">str</span>]        = <span class="st">'/roboseasy/imu/data'</span>
+TOPIC_JOINT_STATE: <span class="tp">Final</span>[<span class="tp">str</span>] = <span class="st">'/roboseasy/joint_states'</span>
+TOPIC_ROBOT_STATE: <span class="tp">Final</span>[<span class="tp">str</span>] = <span class="st">'/roboseasy/robot_state'</span>
+TOPIC_FSR: <span class="tp">Final</span>[<span class="tp">str</span>]         = <span class="st">'/roboseasy/fsr/data'</span>
+
+SRV_QUERY_STATE: <span class="tp">Final</span>[<span class="tp">str</span>]    = <span class="st">'/roboseasy/query_state'</span>
+ACTION_WALK: <span class="tp">Final</span>[<span class="tp">str</span>]        = <span class="st">'/roboseasy/walk'</span>
+
+<span class="cm"># 노드 이름</span>
+NODE_NAME: <span class="tp">Final</span>[<span class="tp">str</span>] = <span class="st">'state_estimator_node'</span></pre>
+        </div>
+        <div class="rule-note ros">
+          <strong>규칙:</strong> 토픽명은 문자열 리터럴을 코드 전체에 흩뿌리지 말고 <strong>모듈 상단에 상수로 선언</strong>한다. 오타를 방지하고 일괄 수정이 쉬워진다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROS2 콜백 -->
+  <section id="ros-callback">
+    <div class="section-header">
+      <div class="section-number ros">R3</div>
+      <h2>ROS2 — 콜백 함수</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">ROS2</span>
+        <div class="rule-title">snake_case + _callback 접미사 / msg 파라미터명 통일</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">모든 ROS2 콜백 함수는 <code style="color:var(--ros)">_callback</code> 접미사로 끝낸다. 메시지 파라미터명은 <code style="color:var(--ros)">msg</code>로 통일한다.</p>
+        <div class="single-code">
+          <div class="code-label ros">✓ ROS2 GOOD</div>
+          <pre><span class="kw">def</span> <span class="fn">timer_callback</span>(self) -> <span class="tp">None</span>:
+    <span class="dc">"""주기 타이머 콜백: 상태 추정 및 퍼블리시."""</span>
+    self._update_pinocchio()
+    self._publish_state()
+
+<span class="kw">def</span> <span class="fn">imu_callback</span>(self, msg: <span class="cl">Imu</span>) -> <span class="tp">None</span>:
+    <span class="dc">"""IMU 데이터 수신 콜백."""</span>
+    self._imu_queue.append(msg)
+    self._has_imu_data = <span class="kw">True</span>
+
+<span class="kw">def</span> <span class="fn">joint_state_callback</span>(self, msg: <span class="cl">JointState</span>) -> <span class="tp">None</span>:
+    <span class="dc">"""관절 상태 수신 콜백."""</span>
+    self._joint_state_queue.append(msg)
+
+<span class="kw">def</span> <span class="fn">fsr_callback</span>(self, msg: <span class="cl">FsrState</span>) -> <span class="tp">None</span>:
+    <span class="dc">"""FSR 센서 데이터 수신 콜백."""</span>
+    self._fsr_queue.append(msg)</pre>
+        </div>
+        <div class="code-grid" style="margin-top:0.75rem;">
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 접미사 없음</div>
+            <pre><span class="kw">def</span> <span class="fn">on_imu</span>(self, msg):      <span class="cm"># _callback 없음 X</span>
+    ...
+
+<span class="kw">def</span> <span class="fn">handle_joint</span>(self, msg): <span class="cm"># _callback 없음 X</span>
+    ...
+
+<span class="kw">def</span> <span class="fn">ImuCallback</span>(self, msg):  <span class="cm"># PascalCase X</span>
+    ...</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 파라미터명 혼용</div>
+            <pre><span class="kw">def</span> <span class="fn">imu_callback</span>(self, data): <span class="cm"># data X → msg</span>
+    ...
+
+<span class="kw">def</span> <span class="fn">joint_state_callback</span>(
+    self, joint_msg          <span class="cm"># joint_msg X → msg</span>
+):
+    ...</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROS2 파라미터 -->
+  <section id="ros-param">
+    <div class="section-header">
+      <div class="section-number ros">R4</div>
+      <h2>ROS2 — 파라미터 선언</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">ROS2</span>
+        <div class="rule-title">declare_parameter → get_parameter → 인스턴스 변수 저장 패턴</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">파라미터는 반드시 <code style="color:var(--ros)">declare_parameter</code>로 먼저 선언 후 <code style="color:var(--ros)">get_parameter</code>로 읽어 인스턴스 변수에 저장한다. 파라미터 이름은 snake_case 사용.</p>
+        <div class="single-code">
+          <div class="code-label ros">✓ ROS2 GOOD</div>
+          <pre><span class="kw">def</span> <span class="fn">__init__</span>(self) -> <span class="tp">None</span>:
+    <span class="fn">super</span>().__init__(<span class="st">'state_estimator_node'</span>)
+
+    <span class="cm"># 파라미터 선언 (기본값 포함)</span>
+    self.<span class="fn">declare_parameter</span>(<span class="st">'control_hz'</span>,   <span class="nm">100</span>)
+    self.<span class="fn">declare_parameter</span>(<span class="st">'lipm_height'</span>,  <span class="nm">0.75</span>)
+    self.<span class="fn">declare_parameter</span>(<span class="st">'urdf_path'</span>,    <span class="st">''</span>)
+    self.<span class="fn">declare_parameter</span>(<span class="st">'use_sim_time'</span>, <span class="kw">False</span>)
+
+    <span class="cm"># 파라미터 읽기 → 인스턴스 변수 저장</span>
+    self._control_hz: <span class="tp">int</span> = (
+        self.<span class="fn">get_parameter</span>(<span class="st">'control_hz'</span>)
+        .<span class="fn">get_parameter_value</span>().integer_value
+    )
+    self._lipm_height: <span class="tp">float</span> = (
+        self.<span class="fn">get_parameter</span>(<span class="st">'lipm_height'</span>)
+        .<span class="fn">get_parameter_value</span>().double_value
+    )
+    self._urdf_path: <span class="tp">str</span> = (
+        self.<span class="fn">get_parameter</span>(<span class="st">'urdf_path'</span>)
+        .<span class="fn">get_parameter_value</span>().string_value
+    )</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROS2 main -->
+  <section id="ros-main">
+    <div class="section-header">
+      <div class="section-number ros">R5</div>
+      <h2>ROS2 — main() 함수</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">ROS2</span>
+        <div class="rule-title">main() 타입 힌트 포함 / try-finally 패턴 / if __name__ == '__main__'</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">ROS2 노드의 진입점 <code style="color:var(--ros)">main()</code> 함수는 타입 힌트를 포함하고, <code style="color:var(--ros)">try-finally</code>로 노드 종료를 보장한다.</p>
+        <div class="single-code">
+          <div class="code-label ros">✓ ROS2 GOOD</div>
+          <pre><span class="kw">def</span> <span class="fn">main</span>(args: <span class="tp">list</span>[<span class="tp">str</span>] | <span class="tp">None</span> = <span class="kw">None</span>) -> <span class="tp">None</span>:
+    <span class="dc">"""노드 진입점."""</span>
+    rclpy.<span class="fn">init</span>(args=args)
+    node = <span class="cl">StateEstimatorNode</span>()
+
+    <span class="kw">try</span>:
+        rclpy.<span class="fn">spin</span>(node)
+    <span class="kw">except</span> <span class="cl">KeyboardInterrupt</span>:
+        node.<span class="fn">get_logger</span>().<span class="fn">info</span>(<span class="st">'Keyboard interrupt, shutting down.'</span>)
+    <span class="kw">finally</span>:
+        node.<span class="fn">destroy_node</span>()
+        rclpy.<span class="fn">shutdown</span>()
+
+
+<span class="kw">if</span> __name__ == <span class="st">'__main__'</span>:
+    <span class="fn">main</span>()</pre>
+        </div>
+        <div class="rule-note ros">
+          <strong>setup.py / setup.cfg:</strong> entry_points의 console_scripts에 <code style="color:var(--ros)">module_name:main</code> 형태로 등록. 반드시 <code style="color:var(--ros)">if __name__ == '__main__'</code> 블록도 함께 작성.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>
