@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobosEasy ROS2 Jazzy 프로젝트 / 워크스페이스 규칙서 (Ubuntu 24.04)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2538;
+    --border: #2a3050;
+    --accent: #4f8ef7;
+    --accent2: #a78bfa;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --ros: #06b6d4;
+    --text: #e2e8f0;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --code-bg: #0d1117;
+    --tag-blue: rgba(79,142,247,0.15);
+    --tag-green: rgba(16,185,129,0.15);
+    --tag-purple: rgba(124,58,237,0.15);
+    --tag-orange: rgba(245,158,11,0.15);
+    --tag-cyan: rgba(6,182,212,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 2rem;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-header .logo {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-section {
+    padding: 0.75rem 1.25rem 0.25rem;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 0.4rem 1.25rem;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg3);
+    border-left-color: var(--accent2);
+  }
+
+  .main {
+    margin-left: 240px;
+    padding: 2.5rem 3rem 4rem;
+    max-width: 960px;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero .badge-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-py  { background: var(--tag-green); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-ros { background: var(--tag-purple); color: var(--accent2); border: 1px solid rgba(124,58,237,0.3); }
+  .badge-g   { background: var(--tag-blue); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+
+  .hero h1 { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+  .hero p  { color: var(--text2); font-size: 14px; }
+  .hero p a { color: var(--accent2); text-decoration: none; }
+  .hero p a:hover { text-decoration: underline; }
+
+  .meta-row { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; color: var(--text3); }
+  .meta-item span { color: var(--text2); }
+
+  section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: #7c3aed;
+    color: white;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  h2 { font-size: 18px; font-weight: 600; color: var(--text); }
+
+  .rule-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .rule-header {
+    padding: 0.875rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .rule-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-naming { background: var(--tag-blue);   color: var(--accent);  border: 1px solid rgba(79,142,247,0.25); }
+  .tag-env    { background: var(--tag-purple);  color: var(--accent2); border: 1px solid rgba(124,58,237,0.25); }
+  .tag-docs   { background: var(--tag-green);   color: var(--accent3); border: 1px solid rgba(16,185,129,0.25); }
+  .tag-build  { background: var(--tag-orange);  color: var(--warn);    border: 1px solid rgba(245,158,11,0.25); }
+  .tag-ros    { background: var(--tag-cyan);    color: var(--ros);     border: 1px solid rgba(6,182,212,0.25); }
+
+  .rule-title { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  .rule-body { padding: 1rem 1.25rem; }
+
+  .rule-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .code-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .code-block { border-radius: 7px; overflow: hidden; }
+
+  .code-label {
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .code-label.ok  { background: rgba(16,185,129,0.2);  color: var(--accent3); }
+  .code-label.bad { background: rgba(239,68,68,0.15);  color: #f87171; }
+  .code-label.ros { background: rgba(124,58,237,0.15); color: var(--accent2); }
+
+  pre {
+    background: var(--code-bg);
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .kw  { color: #c792ea; }
+  .fn  { color: #82aaff; }
+  .cl  { color: #ffcb6b; }
+  .cm  { color: #546e7a; font-style: italic; }
+  .st  { color: #c3e88d; }
+  .nm  { color: #f78c6c; }
+  .at  { color: #89ddff; }
+  .tp  { color: #f59e0b; }
+  .dc  { color: #80cbc4; }
+  .ro  { color: #06b6d4; }
+
+  .rule-note {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.875rem;
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 5px 5px 0;
+    font-size: 12px;
+    color: var(--text2);
+    background: rgba(16,185,129,0.07);
+  }
+
+  .rule-note.warn { border-left-color: var(--warn); background: rgba(245,158,11,0.07); }
+  .rule-note.ros  { border-left-color: var(--accent2); background: rgba(124,58,237,0.07); }
+
+  .rule-note strong { color: var(--accent3); }
+  .rule-note.warn strong { color: var(--warn); }
+  .rule-note.ros  strong { color: var(--accent2); }
+  .rule-note a { color: var(--accent2); }
+
+  .single-code { margin-top: 0.75rem; border-radius: 7px; overflow: hidden; }
+  .single-code pre { border-radius: 0; border: 1px solid var(--border); border-top: none; }
+
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 0.5rem;
+  }
+
+  .summary-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .subject { color: var(--text); font-weight: 500; }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent3);
+    border: 1px solid var(--border);
+  }
+
+  .inline-code.ros { color: var(--accent2); }
+
+  .ros-banner {
+    background: linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(124,58,237,0.05) 100%);
+    border: 1px solid rgba(124,58,237,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .ros-banner strong { color: var(--accent2); }
+  .ros-banner a { color: var(--accent2); }
+
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 0.5rem 0 0.5rem 1.9rem;
+    position: relative;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 0.25rem;
+    color: var(--accent2);
+    font-size: 15px;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+    .code-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">RobosEasy</div>
+    <h2>ROS2 Jazzy 규칙서 (Ubuntu 24.04)</h2>
+  </div>
+
+  <div class="sidebar-section">개요</div>
+  <a href="#summary">Humble ↔ Jazzy 차이 요약표</a>
+
+  <div class="sidebar-section">Jazzy 전용 규칙</div>
+  <a href="#source">ROS2 환경 소스</a>
+  <a href="#discovery">통신 범위 환경 변수 ⭐</a>
+  <a href="#pep668">Python 패키지 설치 (PEP 668) ⭐</a>
+  <a href="#colcon">colcon 빌드</a>
+  <a href="#bashrc">~/.bashrc 세팅</a>
+
+  <div class="sidebar-section">마이그레이션</div>
+  <a href="#migration">Humble → Jazzy 체크리스트</a>
+
+  <div class="sidebar-section">관련 문서</div>
+  <a href="roboseasy_ros2_humble_convention.html">ROS2 Humble 규칙서</a>
+  <a href="roboseasy_bashrc_alias_guide.html">.bashrc / alias 가이드</a>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-ros">ROS2 Jazzy Jalisco</span>
+      <span class="badge badge-g">Ubuntu 24.04</span>
+      <span class="badge badge-py">Python 3.12</span>
+    </div>
+    <h1>RobosEasy ROS2 Jazzy 프로젝트 / 워크스페이스 규칙서</h1>
+    <p>Ubuntu 24.04 + Jazzy 환경에서 달라지는 것만 다룬다. 공통 규칙은 <a href="roboseasy_ros2_humble_convention.html">ROS2 Humble 규칙서</a> 참고.</p>
+    <div class="meta-row">
+      <div class="meta-item">기반 프레임워크: <span>ROS2 Jazzy Jalisco (LTS, ~2029.05)</span></div>
+      <div class="meta-item">빌드 시스템: <span>colcon (ament)</span></div>
+      <div class="meta-item">OS: <span>Ubuntu 24.04</span></div>
+      <div class="meta-item">Python: <span>3.12</span></div>
+    </div>
+  </div>
+
+  <div class="ros-banner">
+    패키지 · 워크스페이스 · 네이밍 · 인터페이스 규칙은 <a href="roboseasy_ros2_humble_convention.html"><strong>ROS2 Humble 규칙서</strong></a>와 <strong>완전히 동일</strong>하다.
+    이 문서는 Ubuntu 24.04 + Jazzy 환경에서 <strong>달라지는 것만</strong> 다룬다.
+  </div>
+
+  <!-- 차이 요약표 -->
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-number">∑</div>
+      <h2>Humble ↔ Jazzy 차이 요약표</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-body" style="padding:0;">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th style="width:22%">항목</th>
+              <th style="width:36%">Humble (Ubuntu 22.04)</th>
+              <th>Jazzy (Ubuntu 24.04)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">소스 경로</td><td><span class="inline-code">/opt/ros/humble/setup.bash</span></td><td><span class="inline-code ros">/opt/ros/jazzy/setup.bash</span></td></tr>
+            <tr><td class="subject">Python</td><td>3.10</td><td><strong style="color:var(--text)">3.12</strong></td></tr>
+            <tr><td class="subject">로컬 통신 제한</td><td><span class="inline-code">ROS_LOCALHOST_ONLY=1</span></td><td><span class="inline-code ros">ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST</span> (구 방식 deprecated)</td></tr>
+            <tr><td class="subject">다중 PC 연동</td><td><span class="inline-code">ROS_LOCALHOST_ONLY=0</span></td><td><span class="inline-code ros">ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET</span> (+ 필요시 <span class="inline-code">ROS_STATIC_PEERS</span>)</td></tr>
+            <tr><td class="subject">pip 설치</td><td>시스템에 직접 가능</td><td><strong style="color:var(--text)">차단됨 (PEP 668)</strong> → apt/rosdep 우선, 예외 시 venv</td></tr>
+            <tr><td class="subject">기본 RMW</td><td><span class="inline-code">rmw_fastrtps_cpp</span></td><td><span class="inline-code">rmw_fastrtps_cpp</span> (동일)</td></tr>
+            <tr><td class="subject">setup.py 빌드 경고</td><td>없음</td><td><span class="inline-code">SetuptoolsDeprecationWarning</span> 출력 (무시 가능)</td></tr>
+            <tr><td class="subject">네이밍 · 패키지 구조</td><td>—</td><td><strong style="color:var(--text)">Humble 규칙서와 동일</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. 소스 -->
+  <section id="source">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>ROS2 환경 소스</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-env">ENV</span>
+        <div class="rule-title">humble 대신 jazzy를 source 한다 — 나머지 순서(배포판 → 워크스페이스)는 동일</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ ~/.bashrc</div>
+          <pre><span class="cm"># ── ROS2 배포판 소스 (항상 먼저) ──</span>
+<span class="kw">source</span> /opt/ros/jazzy/setup.bash
+
+<span class="cm"># ── 워크스페이스 소스 (빌드 후 존재할 때만) ──</span>
+<span class="kw">if</span> [ -f <span class="st">"$HOME/roboseasy_ws/install/setup.bash"</span> ]; <span class="kw">then</span>
+	<span class="kw">source</span> <span class="st">"$HOME/roboseasy_ws/install/setup.bash"</span>
+<span class="kw">fi</span></pre>
+        </div>
+        <div class="rule-note warn">⚠️ 한 셸에서 <strong>Humble과 Jazzy를 동시에 source 하지 않는다.</strong> 서로 다른 배포판을 섞으면 빌드·통신이 모두 깨진다. 두 배포판을 오가는 경우 alias(<span class="inline-code">sr_humble</span>, <span class="inline-code">sr_jazzy</span>)로 분리하고 새 터미널에서 하나만 source 한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 통신 범위 환경 변수 -->
+  <section id="discovery">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>통신 범위 환경 변수 (Humble과 가장 다른 부분) ⭐</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-env">ENV</span>
+        <div class="rule-title">ROS_LOCALHOST_ONLY 대신 ROS_AUTOMATIC_DISCOVERY_RANGE를 사용한다</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">Jazzy에서 <span class="inline-code">ROS_LOCALHOST_ONLY</span>는 <strong style="color:var(--text)">deprecated</strong>이며 설정 시 경고가 출력된다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — Jazzy 방식</div>
+            <pre><span class="cm"># 단일 PC 개발 (외부 노출 차단)</span>
+<span class="kw">export</span> <span class="at">ROS_AUTOMATIC_DISCOVERY_RANGE</span>=<span class="st">LOCALHOST</span>
+
+<span class="cm"># 다중 PC 연동 (같은 서브넷 자동 발견)</span>
+<span class="kw">export</span> <span class="at">ROS_AUTOMATIC_DISCOVERY_RANGE</span>=<span class="st">SUBNET</span>
+
+<span class="cm"># 특정 PC와만 통신 (지정 피어만)</span>
+<span class="kw">export</span> <span class="at">ROS_AUTOMATIC_DISCOVERY_RANGE</span>=<span class="st">LOCALHOST</span>
+<span class="kw">export</span> <span class="at">ROS_STATIC_PEERS</span>=<span class="st">'192.168.0.10;192.168.0.11'</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — Humble 방식</div>
+            <pre><span class="cm"># Jazzy에서 deprecated 경고 출력</span>
+<span class="kw">export</span> <span class="at">ROS_LOCALHOST_ONLY</span>=<span class="nm">1</span></pre>
+          </div>
+        </div>
+        <table class="summary-table" style="margin-top:1rem;">
+          <thead><tr><th style="width:30%">값</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td class="subject"><span class="inline-code ros">LOCALHOST</span></td><td>같은 PC 안에서만 자동 발견 (단독 개발 권장)</td></tr>
+            <tr><td class="subject"><span class="inline-code ros">SUBNET</span></td><td>같은 서브넷 전체에서 자동 발견 (기본값)</td></tr>
+            <tr><td class="subject"><span class="inline-code ros">OFF</span></td><td>자동 발견 안 함 — ROS_STATIC_PEERS로 지정한 피어만</td></tr>
+            <tr><td class="subject"><span class="inline-code ros">SYSTEM_DEFAULT</span></td><td>DDS 설정 파일을 그대로 따름</td></tr>
+          </tbody>
+        </table>
+        <div class="rule-note warn">⚠️ <strong>팀 규칙:</strong> <span class="inline-code">ROS_DOMAIN_ID</span> 배정 규칙은 Humble과 동일하게 유지한다. 도메인 격리 + 발견 범위 제한을 함께 쓴다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. PEP 668 -->
+  <section id="pep668">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>Python 패키지 설치 (PEP 668) ⭐</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-build">INSTALL</span>
+        <div class="rule-title">apt / rosdep 우선 — 시스템 Python에 pip install 금지</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">Ubuntu 24.04의 Python 3.12는 <strong style="color:var(--text)">externally-managed</strong> 환경이라 시스템에 직접 <span class="inline-code">pip install</span> 하면 오류가 난다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="cm"># 1순위: apt (ROS 패키지 형태)</span>
+<span class="fn">sudo apt install</span> python3-numpy python3-scipy
+
+<span class="cm"># 2순위: rosdep (package.xml 일괄 설치)</span>
+<span class="kw">cd</span> ~/roboseasy_ws
+<span class="fn">rosdep install</span> --from-paths src --ignore-src -r -y
+
+<span class="cm"># 3순위: apt에 없는 패키지만 venv</span>
+<span class="fn">python3 -m venv</span> ~/roboseasy_venv --system-site-packages
+<span class="kw">source</span> ~/roboseasy_venv/bin/activate
+<span class="fn">pip install</span> some_package</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="cm"># error: externally-managed-environment</span>
+<span class="fn">pip install</span> numpy
+
+<span class="cm"># 강제 우회 — 시스템 파이썬 오염,</span>
+<span class="cm"># apt와 충돌</span>
+<span class="fn">pip install</span> numpy --break-system-packages</pre>
+          </div>
+        </div>
+        <div class="rule-note warn">⚠️ venv를 워크스페이스 안에 만들 경우 colcon이 빌드 대상으로 오인하지 않도록 venv 폴더에 빈 <span class="inline-code">COLCON_IGNORE</span> 파일을 넣는다: <span class="inline-code">touch ~/roboseasy_ws/venv/COLCON_IGNORE</span></div>
+        <div class="rule-note">💡 <span class="inline-code">--system-site-packages</span> 옵션을 줘야 venv 안에서도 <span class="inline-code">rclpy</span> 등 apt로 설치된 ROS 패키지를 임포트할 수 있다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. colcon 빌드 -->
+  <section id="colcon">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>colcon 빌드</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-build">BUILD</span>
+        <div class="rule-title">Humble과 동일 — setup.py 관련 경고는 무시한다</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ 빌드 명령 (Humble과 동일)</div>
+          <pre><span class="kw">cd</span> ~/roboseasy_ws
+<span class="fn">colcon</span> build --symlink-install
+<span class="kw">source</span> install/setup.bash</pre>
+        </div>
+        <p class="rule-desc" style="margin-top:0.875rem;">Jazzy에서 <span class="inline-code">ament_python</span> 패키지를 빌드하면 아래와 같은 경고가 출력되는데, <strong style="color:var(--text)">정상 동작이며 무시한다.</strong></p>
+        <div class="single-code">
+          <div class="code-label ros">빌드 시 출력되는 경고 (무시 가능)</div>
+          <pre><span class="cm">SetuptoolsDeprecationWarning: setup.py install is deprecated.</span></pre>
+        </div>
+        <div class="rule-note warn">⚠️ 경고를 없애려고 <span class="inline-code">setup.py</span>를 <span class="inline-code">pyproject.toml</span>로 바꾸지 않는다. Jazzy의 ament_python은 여전히 setup.py 기반이다. 패키지 구조·setup.py 작성 규칙은 <a href="roboseasy_ros2_humble_convention.html#setuppy">Humble 규칙서 §5</a>를 그대로 따른다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. bashrc -->
+  <section id="bashrc">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>~/.bashrc 세팅</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-env">ENV</span>
+        <div class="rule-title">.bashrc / alias 가이드를 그대로 따른다</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc"><a href="roboseasy_bashrc_alias_guide.html" style="color:var(--accent2)">.bashrc / alias 가이드</a>는 Ubuntu 24.04 + Jazzy 기준으로 작성되어 있다. source 경로 · 환경 변수 · alias · 복사용 전체 블록 모두 해당 문서를 사용하면 된다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 마이그레이션 체크리스트 -->
+  <section id="migration">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>Humble → Jazzy 마이그레이션 체크리스트</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">CHECKLIST</span>
+        <div class="rule-title">기존 Humble 워크스페이스를 Ubuntu 24.04 PC로 옮길 때 확인한다</div>
+      </div>
+      <div class="rule-body">
+        <ul class="checklist">
+          <li><span class="inline-code">~/.bashrc</span>의 source 경로를 <span class="inline-code">humble</span> → <span class="inline-code ros">jazzy</span>로 변경</li>
+          <li><span class="inline-code">ROS_LOCALHOST_ONLY</span> → <span class="inline-code ros">ROS_AUTOMATIC_DISCOVERY_RANGE</span>로 교체</li>
+          <li><span class="inline-code">build/</span> <span class="inline-code">install/</span> <span class="inline-code">log/</span> 삭제 후 <strong style="color:var(--text)">전체 재빌드</strong> (배포판 간 산출물 호환 안 됨)</li>
+          <li><span class="inline-code">rosdep update &amp;&amp; rosdep install --from-paths src --ignore-src -r -y</span>로 의존성 재설치</li>
+          <li>pip로 설치하던 Python 패키지 → apt(<span class="inline-code">python3-*</span>) 또는 venv로 전환</li>
+          <li>Python 3.12 문법 호환 확인 (3.10 코드는 대부분 그대로 동작)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--border); padding-top:1.5rem; color:var(--text3); font-size:12px;">
+    RobosEasy ROS2 Jazzy Convention v1.0 — Ubuntu 24.04 + ROS2 Jazzy Jalisco 기반. 공통 규칙은 <a href="roboseasy_ros2_humble_convention.html" style="color:var(--accent2)">Humble 규칙서</a> 참조
+  </footer>
+
+</main>
+
+</body>
+</html>

@@ -1,12 +1,20 @@
 # Roboseasy 코드 컨벤션
 
-## C++ 코드 규칙서 바로가기
+RobosEasy 팀의 코드 · 프로젝트 · 개발 환경 규약 문서 모음입니다.
+각 문서는 **마크다운(문서)** 과 **웹(HTML)** 두 가지 버전을 제공합니다.
 
-[Roboseasy C++ 코드 규칙서](roboseasy_cpp_convention.md)
+## 📚 문서 목록
 
-## Python 코드 규칙서 바로가기
+| 문서 | 내용 | 마크다운 | 웹(HTML) |
+|------|------|:-------:|:-------:|
+| **C++ 코드 규칙서** | 클래스 · 함수 · 변수 네이밍, 스타일 (C++17) | [md](roboseasy_cpp_convention.md) | [web](html/roboseasy_cpp_convention.html) |
+| **Python 코드 규칙서** | 네이밍 · 타입 힌트 · Docstring + ROS2 Python 패턴 | [md](roboseasy_python_convention.md) | [web](html/roboseasy_python_convention.html) |
+| **ROS2 Humble 규칙서** | 패키지 · 워크스페이스 · 빌드 · 인터페이스 (Ubuntu 22.04) | [md](roboseasy_ros2_humble_convention.md) | [web](html/roboseasy_ros2_humble_convention.html) |
+| **ROS2 Jazzy 규칙서** | Ubuntu 24.04 + Jazzy 전용 차이점 · 마이그레이션 | [md](roboseasy_ros2_jazzy_convention.md) | [web](html/roboseasy_ros2_jazzy_convention.html) |
+| **`.bashrc` / alias 가이드** | ROS2 개발 환경 변수 · 팀 표준 alias 세팅 | [md](roboseasy_bashrc_alias_guide.md) | [web](html/roboseasy_bashrc_alias_guide.html) |
 
-[Roboseasy Python 코드 규칙서](roboseasy_python_convention.md)
+> 💡 코드 **내부** 규칙은 언어별 규칙서(C++ / Python), 코드 **외부**(패키지 · 빌드 · 워크스페이스) 규칙은 ROS2 규칙서를 참고합니다.
+> Ubuntu 버전에 따라 ROS2 Humble(22.04) 또는 Jazzy(24.04) 규칙서를 선택하세요.
 
 ---
 

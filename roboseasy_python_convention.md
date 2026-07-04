@@ -197,7 +197,7 @@ from typing import Final
 GRAVITY_ACCEL: Final[float] = 9.80665
 MAX_JOINT_VEL: Final[float] = 3.14
 DEFAULT_CONTROL_HZ: Final[int] = 100
-ROBOT_NAME: Final[str] = 'roboseasy_edie'
+ROBOT_NAME: Final[str] = 'roboseasy_abo'
 ```
 
 ---
@@ -486,7 +486,7 @@ description = (
 )
 
 # ❌ BAD — 혼용 금지
-name1 = 'edie'
+name1 = 'abo'
 name2 = "alice"   # 같은 파일에서 혼용 X
 ```
 

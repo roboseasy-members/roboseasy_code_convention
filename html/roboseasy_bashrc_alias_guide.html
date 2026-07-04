@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobosEasy ~/.bashrc / alias 세팅 가이드</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2538;
+    --border: #2a3050;
+    --accent: #4f8ef7;
+    --accent2: #a78bfa;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --ros: #06b6d4;
+    --text: #e2e8f0;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --code-bg: #0d1117;
+    --tag-blue: rgba(79,142,247,0.15);
+    --tag-green: rgba(16,185,129,0.15);
+    --tag-purple: rgba(124,58,237,0.15);
+    --tag-orange: rgba(245,158,11,0.15);
+    --tag-cyan: rgba(6,182,212,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 2rem;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-header .logo {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent3);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-section {
+    padding: 0.75rem 1.25rem 0.25rem;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 0.4rem 1.25rem;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg3);
+    border-left-color: var(--accent3);
+  }
+
+  .main {
+    margin-left: 240px;
+    padding: 2.5rem 3rem 4rem;
+    max-width: 960px;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero .badge-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-py  { background: var(--tag-green); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-ros { background: var(--tag-purple); color: var(--accent2); border: 1px solid rgba(124,58,237,0.3); }
+  .badge-g   { background: var(--tag-blue); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+
+  .hero h1 { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+  .hero p  { color: var(--text2); font-size: 14px; }
+  .hero p a { color: var(--accent3); text-decoration: none; }
+  .hero p a:hover { text-decoration: underline; }
+
+  .meta-row { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; color: var(--text3); }
+  .meta-item span { color: var(--text2); }
+
+  section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--accent3);
+    color: white;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  h2 { font-size: 18px; font-weight: 600; color: var(--text); }
+
+  .rule-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .rule-header {
+    padding: 0.875rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .rule-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-shell  { background: var(--tag-green);   color: var(--accent3); border: 1px solid rgba(16,185,129,0.25); }
+  .tag-env    { background: var(--tag-purple);  color: var(--accent2); border: 1px solid rgba(124,58,237,0.25); }
+  .tag-alias  { background: var(--tag-blue);    color: var(--accent);  border: 1px solid rgba(79,142,247,0.25); }
+  .tag-build  { background: var(--tag-orange);  color: var(--warn);    border: 1px solid rgba(245,158,11,0.25); }
+
+  .rule-title { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  .rule-body { padding: 1rem 1.25rem; }
+
+  .rule-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .code-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .code-block { border-radius: 7px; overflow: hidden; }
+
+  .code-label {
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .code-label.ok  { background: rgba(16,185,129,0.2);  color: var(--accent3); }
+  .code-label.bad { background: rgba(239,68,68,0.15);  color: #f87171; }
+  .code-label.sh  { background: rgba(16,185,129,0.12); color: var(--accent3); }
+
+  pre {
+    background: var(--code-bg);
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .kw  { color: #c792ea; }
+  .fn  { color: #82aaff; }
+  .cl  { color: #ffcb6b; }
+  .cm  { color: #546e7a; font-style: italic; }
+  .st  { color: #c3e88d; }
+  .nm  { color: #f78c6c; }
+  .at  { color: #89ddff; }
+  .tp  { color: #f59e0b; }
+
+  .rule-note {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.875rem;
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 5px 5px 0;
+    font-size: 12px;
+    color: var(--text2);
+    background: rgba(16,185,129,0.07);
+  }
+
+  .rule-note.warn { border-left-color: var(--warn); background: rgba(245,158,11,0.07); }
+
+  .rule-note strong { color: var(--accent3); }
+  .rule-note.warn strong { color: var(--warn); }
+  .rule-note a { color: var(--accent3); }
+
+  .single-code { margin-top: 0.75rem; border-radius: 7px; overflow: hidden; }
+  .single-code pre { border-radius: 0; border: 1px solid var(--border); border-top: none; }
+
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 0.5rem;
+  }
+
+  .summary-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .subject { color: var(--text); font-weight: 500; }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent3);
+    border: 1px solid var(--border);
+  }
+
+  .inline-code.env { color: var(--accent2); }
+
+  .ros-banner {
+    background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%);
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .ros-banner strong { color: var(--accent3); }
+  .ros-banner a { color: var(--accent3); }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+    .code-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">RobosEasy</div>
+    <h2>~/.bashrc / alias 세팅 가이드</h2>
+  </div>
+
+  <div class="sidebar-section">개요</div>
+  <a href="#summary">alias 요약표</a>
+
+  <div class="sidebar-section">기본 세팅</div>
+  <a href="#edit">~/.bashrc 편집 방법</a>
+  <a href="#source">ROS2 환경 소스</a>
+  <a href="#env">환경 변수</a>
+  <a href="#colcon">colcon 편의 기능</a>
+
+  <div class="sidebar-section">alias / 함수</div>
+  <a href="#alias">팀 표준 alias</a>
+  <a href="#function">편의 함수 (function)</a>
+  <a href="#fullblock">전체 예시 블록 (복사용)</a>
+
+  <div class="sidebar-section">기타</div>
+  <a href="#humble">Humble 사용자 참고</a>
+
+  <div class="sidebar-section">관련 문서</div>
+  <a href="roboseasy_ros2_jazzy_convention.html">ROS2 Jazzy 규칙서</a>
+  <a href="roboseasy_ros2_humble_convention.html">ROS2 Humble 규칙서</a>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-py">bash (Ubuntu 24.04)</span>
+      <span class="badge badge-ros">ROS2 Jazzy</span>
+      <span class="badge badge-g">~/roboseasy_ws</span>
+    </div>
+    <h1>RobosEasy ~/.bashrc / alias 세팅 가이드</h1>
+    <p>팀원 모두가 동일한 환경 변수 · alias를 쓰도록 통일하기 위한 가이드. 워크스페이스 · 패키지 규약은 <a href="roboseasy_ros2_jazzy_convention.html">ROS2 Jazzy 규칙서</a> 참고.</p>
+    <div class="meta-row">
+      <div class="meta-item">대상 셸: <span>bash (Ubuntu 24.04)</span></div>
+      <div class="meta-item">ROS2: <span>Jazzy</span></div>
+      <div class="meta-item">워크스페이스: <span>~/roboseasy_ws</span></div>
+    </div>
+  </div>
+
+  <div class="ros-banner">
+    Ubuntu 22.04 (Humble) 환경은 문서 맨 아래 <a href="#humble"><strong>Humble 사용자 참고</strong></a>를 확인한다.
+  </div>
+
+  <!-- alias 요약표 -->
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-number">∑</div>
+      <h2>alias 요약표</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-body" style="padding:0;">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th style="width:12%">alias</th>
+              <th style="width:55%">실제 명령</th>
+              <th>설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject"><span class="inline-code">cw</span></td><td><span class="inline-code">cd ~/roboseasy_ws</span></td><td>워크스페이스로 이동</td></tr>
+            <tr><td class="subject"><span class="inline-code">cs</span></td><td><span class="inline-code">cd ~/roboseasy_ws/src</span></td><td>소스 폴더로 이동</td></tr>
+            <tr><td class="subject"><span class="inline-code">cb</span></td><td><span class="inline-code">cd ~/roboseasy_ws &amp;&amp; colcon build --symlink-install</span></td><td>전체 빌드</td></tr>
+            <tr><td class="subject"><span class="inline-code">cbs</span></td><td><span class="inline-code">colcon build --symlink-install --packages-select</span></td><td>특정 패키지만 빌드</td></tr>
+            <tr><td class="subject"><span class="inline-code">cbu</span></td><td><span class="inline-code">colcon build --symlink-install --packages-up-to</span></td><td>의존성까지 빌드</td></tr>
+            <tr><td class="subject"><span class="inline-code">sb</span></td><td><span class="inline-code">source ~/roboseasy_ws/install/setup.bash</span></td><td>워크스페이스 소스</td></tr>
+            <tr><td class="subject"><span class="inline-code">sr</span></td><td><span class="inline-code">source /opt/ros/jazzy/setup.bash</span></td><td>ROS2 소스</td></tr>
+            <tr><td class="subject"><span class="inline-code">cc</span></td><td><span class="inline-code">cd ~/roboseasy_ws &amp;&amp; rm -rf build install log</span></td><td>빌드 산출물 정리</td></tr>
+            <tr><td class="subject"><span class="inline-code">rt</span></td><td><span class="inline-code">ros2 topic list</span></td><td>토픽 목록</td></tr>
+            <tr><td class="subject"><span class="inline-code">rn</span></td><td><span class="inline-code">ros2 node list</span></td><td>노드 목록</td></tr>
+            <tr><td class="subject"><span class="inline-code">re</span></td><td><span class="inline-code">ros2 topic echo</span></td><td>토픽 내용 확인</td></tr>
+            <tr><td class="subject"><span class="inline-code">rs</span></td><td><span class="inline-code">ros2 service list</span></td><td>서비스 목록</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. 편집 방법 -->
+  <section id="edit">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>~/.bashrc 편집 방법</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-shell">SHELL</span>
+        <div class="rule-title">팀 공통 설정은 파일 하단에 # ===== RobosEasy ===== 블록으로 모아 관리한다</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label sh">TERMINAL</div>
+          <pre><span class="cm"># 편집</span>
+<span class="fn">nano</span> ~/.bashrc     <span class="cm"># 또는 code ~/.bashrc</span>
+
+<span class="cm"># 저장 후 현재 셸에 즉시 반영</span>
+<span class="kw">source</span> ~/.bashrc</pre>
+        </div>
+        <div class="rule-note warn">⚠️ 개인 설정을 파일 곳곳에 흩뿌리지 말고, <strong>한 블록에 모아</strong> 두면 팀원 간 복사·비교·수정이 쉽다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. source -->
+  <section id="source">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>ROS2 환경 소스 (source)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-shell">SHELL</span>
+        <div class="rule-title">/opt/ros/jazzy → 워크스페이스 순서로 source</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ ~/.bashrc</div>
+          <pre><span class="cm"># ── ROS2 배포판 소스 (항상 먼저) ──</span>
+<span class="kw">source</span> /opt/ros/jazzy/setup.bash
+
+<span class="cm"># ── 워크스페이스 소스 (빌드 후 존재할 때만) ──</span>
+<span class="kw">if</span> [ -f <span class="st">"$HOME/roboseasy_ws/install/setup.bash"</span> ]; <span class="kw">then</span>
+	<span class="kw">source</span> <span class="st">"$HOME/roboseasy_ws/install/setup.bash"</span>
+<span class="kw">fi</span></pre>
+        </div>
+        <div class="rule-note warn">⚠️ 순서가 중요하다. 배포판을 먼저 source 한 뒤 워크스페이스를 source 해야 로컬 패키지가 배포판을 덮어쓴다(overlay). 워크스페이스 setup 존재 여부를 <span class="inline-code">if [ -f ... ]</span>로 확인하면, 아직 빌드 전이라 파일이 없을 때 나는 오류를 막을 수 있다.</div>
+        <div class="rule-note warn">⚠️ 한 셸에서 <strong>Humble과 Jazzy를 동시에 source 하지 않는다.</strong> 배포판이 섞이면 빌드·통신이 모두 깨진다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 환경 변수 -->
+  <section id="env">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>환경 변수</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-env">ENV</span>
+        <div class="rule-title">ROS_DOMAIN_ID는 팀 배정 고정값 / 통신 범위는 ROS_AUTOMATIC_DISCOVERY_RANGE로 제한</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">같은 네트워크에서 여러 사람이 ROS2를 켜면 서로의 토픽이 섞인다. 도메인 격리 + 발견 범위 제한을 함께 쓴다.</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ ~/.bashrc</div>
+          <pre><span class="cm"># ── DDS 도메인 격리 (팀 배정값 사용, 0~101) ──</span>
+<span class="kw">export</span> <span class="at">ROS_DOMAIN_ID</span>=<span class="nm">17</span>
+
+<span class="cm"># ── 자동 발견 범위 제한 (단일 PC 개발 시 권장) ──</span>
+<span class="kw">export</span> <span class="at">ROS_AUTOMATIC_DISCOVERY_RANGE</span>=<span class="st">LOCALHOST</span>
+
+<span class="cm"># ── RMW(DDS) 구현 통일 ──</span>
+<span class="kw">export</span> <span class="at">RMW_IMPLEMENTATION</span>=<span class="st">rmw_fastrtps_cpp</span>
+
+<span class="cm"># ── 로그 색상 출력 ──</span>
+<span class="kw">export</span> <span class="at">RCUTILS_COLORIZED_OUTPUT</span>=<span class="nm">1</span></pre>
+        </div>
+        <table class="summary-table" style="margin-top:1rem;">
+          <thead><tr><th style="width:38%">변수</th><th style="width:32%">역할</th><th>권장값</th></tr></thead>
+          <tbody>
+            <tr><td class="subject"><span class="inline-code env">ROS_DOMAIN_ID</span></td><td>DDS 통신 도메인 격리</td><td>팀 배정 고정값 (예: 17)</td></tr>
+            <tr><td class="subject"><span class="inline-code env">ROS_AUTOMATIC_DISCOVERY_RANGE</span></td><td>노드 자동 발견 범위</td><td>단독 개발 LOCALHOST, 다중 PC SUBNET</td></tr>
+            <tr><td class="subject"><span class="inline-code env">ROS_STATIC_PEERS</span></td><td>지정 피어와만 통신</td><td>필요 시 '192.168.0.10;192.168.0.11'</td></tr>
+            <tr><td class="subject"><span class="inline-code env">RMW_IMPLEMENTATION</span></td><td>사용할 DDS 미들웨어</td><td>rmw_fastrtps_cpp (기본)</td></tr>
+            <tr><td class="subject"><span class="inline-code env">RCUTILS_COLORIZED_OUTPUT</span></td><td>로그 색상</td><td>1</td></tr>
+          </tbody>
+        </table>
+        <div class="single-code">
+          <div class="code-label bad">✗ BAD — Humble 방식 (Jazzy에서 deprecated 경고 출력)</div>
+          <pre><span class="kw">export</span> <span class="at">ROS_LOCALHOST_ONLY</span>=<span class="nm">1</span></pre>
+        </div>
+        <div class="rule-note warn">⚠️ <strong>팀 규칙:</strong> <span class="inline-code env">ROS_DOMAIN_ID</span>는 각자 다른 값을 쓰되, 협업(다중 PC 연동) 시에는 <strong>같은 값</strong>으로 맞춘다. 여러 PC를 연결할 때는 <span class="inline-code env">ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET</span>으로 바꿔야 서로 통신된다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. colcon 편의 기능 -->
+  <section id="colcon">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>colcon 편의 기능</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-build">TOOL</span>
+        <div class="rule-title">자동완성과 colcon_cd를 활성화한다</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ ~/.bashrc</div>
+          <pre><span class="cm"># ── colcon 명령/패키지 자동완성 ──</span>
+<span class="kw">source</span> /usr/share/colcon_argcomplete/hook/register-python-argcomplete.bash
+
+<span class="cm"># ── colcon_cd: 패키지 이름으로 바로 이동 ──</span>
+<span class="kw">source</span> /usr/share/colcon_cd/function/colcon_cd.sh
+<span class="kw">export</span> <span class="at">_colcon_cd_root</span>=<span class="st">/opt/ros/jazzy/</span></pre>
+        </div>
+        <div class="single-code">
+          <div class="code-label sh">사용 예</div>
+          <pre><span class="cm"># 패키지 폴더로 즉시 이동</span>
+<span class="fn">colcon_cd</span> roboseasy_state_estimator</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. alias -->
+  <section id="alias">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>팀 표준 alias</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-alias">ALIAS</span>
+        <div class="rule-title">이동 · 빌드 · 소스 · 디버깅 명령을 alias로 통일</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ ~/.bashrc</div>
+          <pre><span class="cm"># ── 이동 ──</span>
+<span class="kw">alias</span> <span class="at">cw</span>=<span class="st">'cd ~/roboseasy_ws'</span>
+<span class="kw">alias</span> <span class="at">cs</span>=<span class="st">'cd ~/roboseasy_ws/src'</span>
+
+<span class="cm"># ── 빌드 (항상 워크스페이스 루트에서) ──</span>
+<span class="kw">alias</span> <span class="at">cb</span>=<span class="st">'cd ~/roboseasy_ws &amp;&amp; colcon build --symlink-install'</span>
+<span class="kw">alias</span> <span class="at">cbs</span>=<span class="st">'colcon build --symlink-install --packages-select'</span>
+<span class="kw">alias</span> <span class="at">cbu</span>=<span class="st">'colcon build --symlink-install --packages-up-to'</span>
+
+<span class="cm"># ── 소스 ──</span>
+<span class="kw">alias</span> <span class="at">sr</span>=<span class="st">'source /opt/ros/jazzy/setup.bash'</span>
+<span class="kw">alias</span> <span class="at">sb</span>=<span class="st">'source ~/roboseasy_ws/install/setup.bash'</span>
+
+<span class="cm"># ── 정리 ──</span>
+<span class="kw">alias</span> <span class="at">cc</span>=<span class="st">'cd ~/roboseasy_ws &amp;&amp; rm -rf build install log'</span>
+
+<span class="cm"># ── ROS2 디버깅 단축 ──</span>
+<span class="kw">alias</span> <span class="at">rt</span>=<span class="st">'ros2 topic list'</span>
+<span class="kw">alias</span> <span class="at">rn</span>=<span class="st">'ros2 node list'</span>
+<span class="kw">alias</span> <span class="at">re</span>=<span class="st">'ros2 topic echo'</span>
+<span class="kw">alias</span> <span class="at">rs</span>=<span class="st">'ros2 service list'</span></pre>
+        </div>
+        <div class="single-code">
+          <div class="code-label sh">사용 예</div>
+          <pre><span class="cm"># 특정 패키지 빌드 후 소스</span>
+<span class="fn">cbs</span> roboseasy_state_estimator &amp;&amp; <span class="fn">sb</span></pre>
+        </div>
+        <div class="rule-note warn">⚠️ alias 이름은 짧되 <strong>팀 전체가 동일하게</strong> 쓴다. 개인마다 다르면 문서·화면 공유 시 혼란이 생긴다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. function -->
+  <section id="function">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>편의 함수 (function)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-shell">SHELL</span>
+        <div class="rule-title">인자가 필요한 복합 명령은 alias 대신 function으로 작성</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ ~/.bashrc</div>
+          <pre><span class="cm"># ── 빌드 + 소스를 한 번에 ──</span>
+<span class="fn">cbsource</span>() {
+	<span class="kw">cd</span> ~/roboseasy_ws &amp;&amp; \
+	<span class="fn">colcon</span> build --symlink-install --packages-select <span class="st">"$@"</span> &amp;&amp; \
+	<span class="kw">source</span> install/setup.bash
+}
+
+<span class="cm"># ── 워크스페이스 완전 초기화 후 재빌드 ──</span>
+<span class="fn">rebuild</span>() {
+	<span class="kw">cd</span> ~/roboseasy_ws &amp;&amp; \
+	<span class="fn">rm</span> -rf build install log &amp;&amp; \
+	<span class="fn">colcon</span> build --symlink-install &amp;&amp; \
+	<span class="kw">source</span> install/setup.bash
+}</pre>
+        </div>
+        <div class="single-code">
+          <div class="code-label sh">사용 예</div>
+          <pre><span class="fn">cbsource</span> roboseasy_state_estimator roboseasy_msgs</pre>
+        </div>
+        <div class="rule-note">💡 <strong>alias vs function:</strong> 인자를 받지 않는 고정 명령은 <span class="inline-code">alias</span>, 인자(<span class="inline-code">$@</span>)를 넘겨야 하면 <span class="inline-code">function</span>을 쓴다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 전체 블록 -->
+  <section id="fullblock">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>전체 예시 블록 (복사용)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-shell">COPY</span>
+        <div class="rule-title">~/.bashrc 맨 아래에 붙여넣고 ROS_DOMAIN_ID만 본인 값으로 바꾼다</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ 복사용 전체 블록 (Ubuntu 24.04 / Jazzy)</div>
+          <pre><span class="cm"># ============================================================</span>
+<span class="cm"># ===== RobosEasy ROS2 개발 환경 (Ubuntu 24.04 / Jazzy) =====</span>
+<span class="cm"># ============================================================</span>
+
+<span class="cm"># ── ROS2 소스 ──</span>
+<span class="kw">source</span> /opt/ros/jazzy/setup.bash
+<span class="kw">if</span> [ -f <span class="st">"$HOME/roboseasy_ws/install/setup.bash"</span> ]; <span class="kw">then</span>
+	<span class="kw">source</span> <span class="st">"$HOME/roboseasy_ws/install/setup.bash"</span>
+<span class="kw">fi</span>
+
+<span class="cm"># ── 환경 변수 ──</span>
+<span class="kw">export</span> <span class="at">ROS_DOMAIN_ID</span>=<span class="nm">17</span>                            <span class="cm"># ← 본인/팀 배정값으로 변경</span>
+<span class="kw">export</span> <span class="at">ROS_AUTOMATIC_DISCOVERY_RANGE</span>=<span class="st">LOCALHOST</span>     <span class="cm"># 다중 PC 연동 시 SUBNET으로</span>
+<span class="kw">export</span> <span class="at">RMW_IMPLEMENTATION</span>=<span class="st">rmw_fastrtps_cpp</span>
+<span class="kw">export</span> <span class="at">RCUTILS_COLORIZED_OUTPUT</span>=<span class="nm">1</span>
+
+<span class="cm"># ── colcon 편의 기능 ──</span>
+<span class="kw">source</span> /usr/share/colcon_argcomplete/hook/register-python-argcomplete.bash
+<span class="kw">source</span> /usr/share/colcon_cd/function/colcon_cd.sh
+<span class="kw">export</span> <span class="at">_colcon_cd_root</span>=<span class="st">/opt/ros/jazzy/</span>
+
+<span class="cm"># ── 이동 alias ──</span>
+<span class="kw">alias</span> <span class="at">cw</span>=<span class="st">'cd ~/roboseasy_ws'</span>
+<span class="kw">alias</span> <span class="at">cs</span>=<span class="st">'cd ~/roboseasy_ws/src'</span>
+
+<span class="cm"># ── 빌드 alias ──</span>
+<span class="kw">alias</span> <span class="at">cb</span>=<span class="st">'cd ~/roboseasy_ws &amp;&amp; colcon build --symlink-install'</span>
+<span class="kw">alias</span> <span class="at">cbs</span>=<span class="st">'colcon build --symlink-install --packages-select'</span>
+<span class="kw">alias</span> <span class="at">cbu</span>=<span class="st">'colcon build --symlink-install --packages-up-to'</span>
+
+<span class="cm"># ── 소스 alias ──</span>
+<span class="kw">alias</span> <span class="at">sr</span>=<span class="st">'source /opt/ros/jazzy/setup.bash'</span>
+<span class="kw">alias</span> <span class="at">sb</span>=<span class="st">'source ~/roboseasy_ws/install/setup.bash'</span>
+
+<span class="cm"># ── 정리 alias ──</span>
+<span class="kw">alias</span> <span class="at">cc</span>=<span class="st">'cd ~/roboseasy_ws &amp;&amp; rm -rf build install log'</span>
+
+<span class="cm"># ── ROS2 디버깅 alias ──</span>
+<span class="kw">alias</span> <span class="at">rt</span>=<span class="st">'ros2 topic list'</span>
+<span class="kw">alias</span> <span class="at">rn</span>=<span class="st">'ros2 node list'</span>
+<span class="kw">alias</span> <span class="at">re</span>=<span class="st">'ros2 topic echo'</span>
+<span class="kw">alias</span> <span class="at">rs</span>=<span class="st">'ros2 service list'</span>
+
+<span class="cm"># ── 편의 함수 ──</span>
+<span class="fn">cbsource</span>() {
+	<span class="kw">cd</span> ~/roboseasy_ws &amp;&amp; \
+	<span class="fn">colcon</span> build --symlink-install --packages-select <span class="st">"$@"</span> &amp;&amp; \
+	<span class="kw">source</span> install/setup.bash
+}
+<span class="cm"># ============================================================</span></pre>
+        </div>
+        <div class="rule-note">붙여넣은 뒤 <span class="inline-code">source ~/.bashrc</span>로 반영한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Humble 참고 -->
+  <section id="humble">
+    <div class="section-header">
+      <div class="section-number">H</div>
+      <h2>Humble 사용자 참고</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-env">HUMBLE</span>
+        <div class="rule-title">Ubuntu 22.04 (ROS2 Humble) 환경에서는 위 블록에서 딱 두 가지만 바꾼다</div>
+      </div>
+      <div class="rule-body">
+        <table class="summary-table">
+          <thead><tr><th style="width:34%">항목</th><th style="width:36%">Jazzy (이 문서)</th><th>Humble</th></tr></thead>
+          <tbody>
+            <tr><td class="subject">source 경로 / _colcon_cd_root / sr</td><td><span class="inline-code">/opt/ros/jazzy/</span></td><td><span class="inline-code">/opt/ros/humble/</span></td></tr>
+            <tr><td class="subject">통신 범위 제한</td><td><span class="inline-code env">ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST</span></td><td><span class="inline-code env">ROS_LOCALHOST_ONLY=1</span> (다중 PC 시 0)</td></tr>
+          </tbody>
+        </table>
+        <div class="rule-note">프로젝트 규약은 <a href="roboseasy_ros2_humble_convention.html">ROS2 Humble 규칙서</a> 참고.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--border); padding-top:1.5rem; color:var(--text3); font-size:12px;">
+    RobosEasy .bashrc / alias Setup Guide v1.1 — Ubuntu 24.04 + ROS2 Jazzy 기반
+  </footer>
+
+</main>
+
+</body>
+</html>

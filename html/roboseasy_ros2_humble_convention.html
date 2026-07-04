@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobosEasy ROS2 Humble 프로젝트 / 워크스페이스 규칙서</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2538;
+    --border: #2a3050;
+    --accent: #4f8ef7;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --ros: #06b6d4;
+    --text: #e2e8f0;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --code-bg: #0d1117;
+    --tag-blue: rgba(79,142,247,0.15);
+    --tag-green: rgba(16,185,129,0.15);
+    --tag-purple: rgba(124,58,237,0.15);
+    --tag-orange: rgba(245,158,11,0.15);
+    --tag-cyan: rgba(6,182,212,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 2rem;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-header .logo {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--ros);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-section {
+    padding: 0.75rem 1.25rem 0.25rem;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 0.4rem 1.25rem;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg3);
+    border-left-color: var(--ros);
+  }
+
+  .main {
+    margin-left: 240px;
+    padding: 2.5rem 3rem 4rem;
+    max-width: 960px;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero .badge-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-py  { background: var(--tag-green); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-ros { background: var(--tag-cyan); color: var(--ros); border: 1px solid rgba(6,182,212,0.3); }
+  .badge-g   { background: var(--tag-blue); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+
+  .hero h1 { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+  .hero p  { color: var(--text2); font-size: 14px; }
+  .hero p a { color: var(--ros); text-decoration: none; }
+  .hero p a:hover { text-decoration: underline; }
+
+  .meta-row { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; color: var(--text3); }
+  .meta-item span { color: var(--text2); }
+
+  section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--ros);
+    color: white;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  h2 { font-size: 18px; font-weight: 600; color: var(--text); }
+
+  .rule-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .rule-header {
+    padding: 0.875rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .rule-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-naming { background: var(--tag-blue);   color: var(--accent);  border: 1px solid rgba(79,142,247,0.25); }
+  .tag-style  { background: var(--tag-purple);  color: #a78bfa;        border: 1px solid rgba(124,58,237,0.25); }
+  .tag-docs   { background: var(--tag-green);   color: var(--accent3); border: 1px solid rgba(16,185,129,0.25); }
+  .tag-build  { background: var(--tag-orange);  color: var(--warn);    border: 1px solid rgba(245,158,11,0.25); }
+  .tag-ros    { background: var(--tag-cyan);    color: var(--ros);     border: 1px solid rgba(6,182,212,0.25); }
+
+  .rule-title { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  .rule-body { padding: 1rem 1.25rem; }
+
+  .rule-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .code-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .code-block { border-radius: 7px; overflow: hidden; }
+
+  .code-label {
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .code-label.ok  { background: rgba(16,185,129,0.2);  color: var(--accent3); }
+  .code-label.bad { background: rgba(239,68,68,0.15);  color: #f87171; }
+  .code-label.ros { background: rgba(6,182,212,0.15);  color: var(--ros); }
+
+  pre {
+    background: var(--code-bg);
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .kw  { color: #c792ea; }
+  .fn  { color: #82aaff; }
+  .cl  { color: #ffcb6b; }
+  .cm  { color: #546e7a; font-style: italic; }
+  .st  { color: #c3e88d; }
+  .nm  { color: #f78c6c; }
+  .at  { color: #89ddff; }
+  .tp  { color: #f59e0b; }
+  .dc  { color: #80cbc4; }
+  .ro  { color: #06b6d4; }
+
+  .rule-note {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.875rem;
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 5px 5px 0;
+    font-size: 12px;
+    color: var(--text2);
+    background: rgba(16,185,129,0.07);
+  }
+
+  .rule-note.warn { border-left-color: var(--warn); background: rgba(245,158,11,0.07); }
+  .rule-note.ros  { border-left-color: var(--ros);  background: rgba(6,182,212,0.07);  }
+
+  .rule-note strong { color: var(--accent3); }
+  .rule-note.warn strong { color: var(--warn); }
+  .rule-note.ros  strong { color: var(--ros); }
+  .rule-note a { color: var(--ros); }
+
+  .single-code { margin-top: 0.75rem; border-radius: 7px; overflow: hidden; }
+  .single-code pre { border-radius: 0; border: 1px solid var(--border); border-top: none; }
+
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 0.5rem;
+  }
+
+  .summary-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .subject { color: var(--text); font-weight: 500; }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent3);
+    border: 1px solid var(--border);
+  }
+
+  .inline-code.ros { color: var(--ros); }
+
+  .ros-banner {
+    background: linear-gradient(135deg, rgba(6,182,212,0.1) 0%, rgba(6,182,212,0.05) 100%);
+    border: 1px solid rgba(6,182,212,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .ros-banner strong { color: var(--ros); }
+  .ros-banner a { color: var(--ros); }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+    .code-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">RobosEasy</div>
+    <h2>ROS2 Humble 프로젝트 규칙서</h2>
+  </div>
+
+  <div class="sidebar-section">개요</div>
+  <a href="#summary">규칙 요약표</a>
+
+  <div class="sidebar-section">워크스페이스 / 패키지</div>
+  <a href="#workspace">워크스페이스 구조</a>
+  <a href="#pkgname">패키지 이름</a>
+  <a href="#pkglayout">패키지 내부 구조</a>
+
+  <div class="sidebar-section">빌드 설정 파일</div>
+  <a href="#packagexml">package.xml</a>
+  <a href="#setuppy">setup.py (Python)</a>
+  <a href="#cmake">CMakeLists.txt (C++)</a>
+
+  <div class="sidebar-section">인터페이스 / 네이밍</div>
+  <a href="#interface">msg / srv / action</a>
+  <a href="#topic">토픽 / 서비스 / 프레임</a>
+
+  <div class="sidebar-section">실행 / 설정</div>
+  <a href="#launch">런치 파일</a>
+  <a href="#paramyaml">파라미터 YAML</a>
+
+  <div class="sidebar-section">빌드 / 관리</div>
+  <a href="#colcon">colcon 빌드 규칙</a>
+  <a href="#gitignore">.gitignore</a>
+  <a href="#readme">패키지 README</a>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-ros">ROS2 Humble</span>
+      <span class="badge badge-g">Ubuntu 22.04</span>
+      <span class="badge badge-py">colcon (ament)</span>
+    </div>
+    <h1>RobosEasy ROS2 Humble 프로젝트 / 워크스페이스 규칙서</h1>
+    <p>패키지 · 워크스페이스 · 빌드 · 인터페이스 등 프로젝트 수준 규약. Ubuntu 24.04 환경은 <a href="roboseasy_ros2_jazzy_convention.html">ROS2 Jazzy 규칙서</a> 참고.</p>
+    <div class="meta-row">
+      <div class="meta-item">기반 프레임워크: <span>ROS2 Humble</span></div>
+      <div class="meta-item">빌드 시스템: <span>colcon (ament)</span></div>
+      <div class="meta-item">OS: <span>Ubuntu 22.04</span></div>
+    </div>
+  </div>
+
+  <div class="ros-banner">
+    코드 내부 규칙이 아닌 <strong>패키지 · 워크스페이스 · 빌드 · 인터페이스</strong> 등 프로젝트 수준 규약을 다룬다.
+    노드 내부 코드 규칙은 <a href="roboseasy_python_convention.html">Python 규칙서</a> / <a href="roboseasy_cpp_convention.html">C++ 규칙서</a> 참고.
+  </div>
+
+  <!-- 요약표 -->
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-number">∑</div>
+      <h2>규칙 요약표</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-body" style="padding:0;">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th style="width:28%">대상</th>
+              <th style="width:32%">규칙</th>
+              <th>예시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">워크스페이스</td><td><span class="inline-code">{목적}_ws</span> snake_case</td><td><span class="inline-code">roboseasy_ws</span>, <span class="inline-code">abo_ws</span></td></tr>
+            <tr><td class="subject">패키지</td><td><span class="inline-code">roboseasy_</span> 접두 + snake_case</td><td><span class="inline-code">roboseasy_bringup</span>, <span class="inline-code">roboseasy_state_estimator</span></td></tr>
+            <tr><td class="subject">메타 패키지</td><td><span class="inline-code">{로봇}_</span> 접두</td><td><span class="inline-code">abo_description</span>, <span class="inline-code">abo_bringup</span></td></tr>
+            <tr><td class="subject">인터페이스 패키지</td><td><span class="inline-code">_msgs</span> / <span class="inline-code">_interfaces</span> 접미</td><td><span class="inline-code">roboseasy_msgs</span>, <span class="inline-code">roboseasy_interfaces</span></td></tr>
+            <tr><td class="subject">노드 실행파일</td><td>snake_case + <span class="inline-code">_node</span></td><td><span class="inline-code ros">state_estimator_node</span></td></tr>
+            <tr><td class="subject">런치 파일</td><td>snake_case + <span class="inline-code">.launch.py</span></td><td><span class="inline-code">bringup.launch.py</span></td></tr>
+            <tr><td class="subject">파라미터 파일</td><td>snake_case + <span class="inline-code">.yaml</span></td><td><span class="inline-code">state_estimator.yaml</span></td></tr>
+            <tr><td class="subject">msg 파일</td><td>PascalCase + <span class="inline-code">.msg</span></td><td><span class="inline-code ros">RobotState.msg</span></td></tr>
+            <tr><td class="subject">srv 파일</td><td>PascalCase + <span class="inline-code">.srv</span></td><td><span class="inline-code ros">QueryState.srv</span></td></tr>
+            <tr><td class="subject">action 파일</td><td>PascalCase + <span class="inline-code">.action</span></td><td><span class="inline-code ros">Walk.action</span></td></tr>
+            <tr><td class="subject">토픽 / 서비스</td><td><span class="inline-code">/roboseasy/…</span> snake_case</td><td><span class="inline-code ros">/roboseasy/joint_states</span></td></tr>
+            <tr><td class="subject">프레임(TF) ID</td><td>snake_case</td><td><span class="inline-code">base_link</span>, <span class="inline-code">l_foot_link</span></td></tr>
+            <tr><td class="subject">URDF / Xacro</td><td>snake_case + <span class="inline-code">.urdf.xacro</span></td><td><span class="inline-code">abo.urdf.xacro</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. 워크스페이스 구조 -->
+  <section id="workspace">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>워크스페이스 구조</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">STRUCTURE</span>
+        <div class="rule-title">~/{목적}_ws 형식 — 소스는 반드시 src/ 아래에만 둔다</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">colcon 워크스페이스는 <span class="inline-code">build/</span>, <span class="inline-code">install/</span>, <span class="inline-code">log/</span>, <span class="inline-code">src/</span>로 구성된다. <strong style="color:var(--text)">src/를 제외한 나머지 3개 디렉토리는 절대 커밋하지 않는다</strong> (.gitignore).</p>
+        <div class="single-code">
+          <div class="code-label ros">WORKSPACE LAYOUT</div>
+          <pre>roboseasy_ws/
+├── build/          <span class="cm"># colcon 빌드 산출물 (git 제외)</span>
+├── install/        <span class="cm"># 설치 산출물 · setup.bash (git 제외)</span>
+├── log/            <span class="cm"># 빌드/실행 로그 (git 제외)</span>
+└── src/            <span class="cm"># ← 소스 패키지만 여기에</span>
+    ├── roboseasy_bringup/
+    ├── roboseasy_msgs/
+    ├── roboseasy_state_estimator/
+    └── roboseasy_description/</pre>
+        </div>
+        <div class="rule-note warn">⚠️ 항상 <strong>워크스페이스 최상단</strong>(roboseasy_ws/)에서 <span class="inline-code">colcon build</span>를 실행한다. src/ 안에서 빌드하면 build/·install/이 엉뚱한 위치에 생성된다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 패키지 이름 -->
+  <section id="pkgname">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>패키지 이름</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">roboseasy_ 접두 + snake_case — 하이픈(-) 금지, 소문자만</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">패키지명은 곧 Python 임포트 이름 / ament 리소스 이름이 되므로 하이픈을 쓸 수 없다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre>roboseasy_bringup            <span class="cm"># 런치·설정 통합</span>
+roboseasy_state_estimator    <span class="cm"># 상태 추정 노드</span>
+roboseasy_msgs               <span class="cm"># 인터페이스 패키지</span>
+roboseasy_description        <span class="cm"># URDF·메시·RViz</span>
+abo_bringup                  <span class="cm"># 로봇명 접두 허용</span></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre>roboseasy-bringup   <span class="cm"># 하이픈 X (임포트 불가)</span>
+RoboseasyBringup    <span class="cm"># PascalCase X</span>
+se_pkg              <span class="cm"># 의미 없는 약어 X</span>
+bringup             <span class="cm"># 접두 없음 → 충돌 위험</span></pre>
+          </div>
+        </div>
+        <div class="rule-note">💡 <strong>패키지 역할별 접미 관례:</strong> <span class="inline-code">_bringup</span>(통합 실행) · <span class="inline-code">_description</span>(URDF/메시) · <span class="inline-code">_msgs</span>(인터페이스) · <span class="inline-code">_control</span>(제어) · <span class="inline-code">_gazebo</span>(시뮬)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 패키지 내부 구조 -->
+  <section id="pkglayout">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>패키지 내부 구조</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">STRUCTURE</span>
+        <div class="rule-title">Python / C++ 각각의 ament 표준 레이아웃을 따른다</div>
+      </div>
+      <div class="rule-body">
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">PYTHON 패키지 (ament_python)</div>
+            <pre>roboseasy_state_estimator/
+├── package.xml
+├── setup.py
+├── setup.cfg
+├── resource/
+│   └── roboseasy_state_estimator  <span class="cm"># 마커(빈 파일)</span>
+├── roboseasy_state_estimator/     <span class="cm"># 파이썬 모듈</span>
+│   ├── __init__.py
+│   └── state_estimator_node.py
+├── launch/
+│   └── state_estimator.launch.py
+├── config/
+│   └── state_estimator.yaml
+└── test/
+    └── test_state_estimator.py</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label ros">C++ 패키지 (ament_cmake)</div>
+            <pre>roboseasy_joint_controller/
+├── package.xml
+├── CMakeLists.txt
+├── include/
+│   └── roboseasy_joint_controller/  <span class="cm"># 공개 헤더</span>
+│       └── joint_controller.hpp
+├── src/
+│   └── joint_controller.cpp
+├── launch/
+│   └── joint_controller.launch.py
+└── config/
+    └── joint_controller.yaml</pre>
+          </div>
+        </div>
+        <div class="rule-note warn">⚠️ Python 패키지에서 <span class="inline-code">resource/{패키지명}</span> 마커 파일과 모듈 폴더 이름은 <strong>package.xml의 &lt;name&gt;과 정확히 일치</strong>해야 한다. 하나라도 다르면 <span class="inline-code">ros2 run</span>이 노드를 찾지 못한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. package.xml -->
+  <section id="packagexml">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>package.xml</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-build">BUILD</span>
+        <div class="rule-title">format="3" / &lt;name&gt;은 패키지명과 일치 / 의존성은 사용 목적별 태그로 구분</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ package.xml</div>
+          <pre><span class="cm">&lt;?xml version="1.0"?&gt;</span>
+<span class="kw">&lt;package</span> <span class="at">format=</span><span class="st">"3"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;name&gt;</span>roboseasy_state_estimator<span class="kw">&lt;/name&gt;</span>
+  <span class="kw">&lt;version&gt;</span>1.0.0<span class="kw">&lt;/version&gt;</span>
+  <span class="kw">&lt;description&gt;</span>RobosEasy 상태 추정 노드 패키지<span class="kw">&lt;/description&gt;</span>
+  <span class="kw">&lt;maintainer</span> <span class="at">email=</span><span class="st">"khw11044@gmail.com"</span><span class="kw">&gt;</span>RobosEasy<span class="kw">&lt;/maintainer&gt;</span>
+  <span class="kw">&lt;license&gt;</span>Apache-2.0<span class="kw">&lt;/license&gt;</span>
+
+  <span class="cm">&lt;!-- 빌드 도구 --&gt;</span>
+  <span class="kw">&lt;buildtool_depend&gt;</span>ament_python<span class="kw">&lt;/buildtool_depend&gt;</span>
+
+  <span class="cm">&lt;!-- 런타임 의존 (실행 시 필요) --&gt;</span>
+  <span class="kw">&lt;exec_depend&gt;</span>rclpy<span class="kw">&lt;/exec_depend&gt;</span>
+  <span class="kw">&lt;exec_depend&gt;</span>sensor_msgs<span class="kw">&lt;/exec_depend&gt;</span>
+  <span class="kw">&lt;exec_depend&gt;</span>roboseasy_msgs<span class="kw">&lt;/exec_depend&gt;</span>
+
+  <span class="cm">&lt;!-- 테스트 전용 --&gt;</span>
+  <span class="kw">&lt;test_depend&gt;</span>ament_flake8<span class="kw">&lt;/test_depend&gt;</span>
+  <span class="kw">&lt;test_depend&gt;</span>ament_pep257<span class="kw">&lt;/test_depend&gt;</span>
+
+  <span class="kw">&lt;export&gt;</span>
+    <span class="kw">&lt;build_type&gt;</span>ament_python<span class="kw">&lt;/build_type&gt;</span>
+  <span class="kw">&lt;/export&gt;</span>
+<span class="kw">&lt;/package&gt;</span></pre>
+        </div>
+        <table class="summary-table" style="margin-top:1rem;">
+          <thead><tr><th style="width:35%">태그</th><th>용도</th></tr></thead>
+          <tbody>
+            <tr><td class="subject"><span class="inline-code">&lt;depend&gt;</span></td><td>빌드 + 런타임 모두 필요 (C++에서 흔함)</td></tr>
+            <tr><td class="subject"><span class="inline-code">&lt;build_depend&gt;</span></td><td>빌드 시에만 필요</td></tr>
+            <tr><td class="subject"><span class="inline-code">&lt;exec_depend&gt;</span></td><td>실행 시에만 필요 (Python에서 흔함)</td></tr>
+            <tr><td class="subject"><span class="inline-code">&lt;test_depend&gt;</span></td><td>테스트 시에만 필요</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. setup.py -->
+  <section id="setuppy">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>setup.py (Python 패키지)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-build">BUILD</span>
+        <div class="rule-title">data_files에 launch/config 등록 / entry_points에 노드 실행파일 등록</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ setup.py</div>
+          <pre><span class="kw">import</span> os
+<span class="kw">from</span> glob <span class="kw">import</span> glob
+<span class="kw">from</span> setuptools <span class="kw">import</span> find_packages, setup
+
+package_name = <span class="st">'roboseasy_state_estimator'</span>
+
+<span class="fn">setup</span>(
+	<span class="at">name</span>=package_name,
+	<span class="at">version</span>=<span class="st">'1.0.0'</span>,
+	<span class="at">packages</span>=<span class="fn">find_packages</span>(exclude=[<span class="st">'test'</span>]),
+	<span class="at">data_files</span>=[
+		(<span class="st">'share/ament_index/resource_index/packages'</span>,
+			[<span class="st">'resource/'</span> + package_name]),
+		(<span class="st">'share/'</span> + package_name, [<span class="st">'package.xml'</span>]),
+		<span class="cm"># launch / config 파일을 install 공간으로 복사 (필수)</span>
+		(os.path.<span class="fn">join</span>(<span class="st">'share'</span>, package_name, <span class="st">'launch'</span>),
+			<span class="fn">glob</span>(<span class="st">'launch/*.launch.py'</span>)),
+		(os.path.<span class="fn">join</span>(<span class="st">'share'</span>, package_name, <span class="st">'config'</span>),
+			<span class="fn">glob</span>(<span class="st">'config/*.yaml'</span>)),
+	],
+	<span class="at">install_requires</span>=[<span class="st">'setuptools'</span>],
+	<span class="at">entry_points</span>={
+		<span class="st">'console_scripts'</span>: [
+			<span class="cm"># {실행이름} = {모듈경로}:{함수명}</span>
+			<span class="st">'state_estimator_node = '</span>
+			<span class="st">'roboseasy_state_estimator.state_estimator_node:main'</span>,
+		],
+	},
+)</pre>
+        </div>
+        <div class="rule-note warn">⚠️ launch/·config/ 파일을 <strong>data_files에 등록하지 않으면</strong> install/로 복사되지 않아 <span class="inline-code">ros2 launch</span>가 파일을 찾지 못한다. 새 런치/설정 파일을 추가할 때마다 확인한다.</div>
+        <div class="rule-note warn">⚠️ 실행 이름(<span class="inline-code">state_estimator_node</span>)은 <span class="inline-code">ros2 run {패키지} {실행이름}</span>에서 사용되므로 snake_case로 통일한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CMakeLists.txt -->
+  <section id="cmake">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>CMakeLists.txt (C++ 패키지)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-build">BUILD</span>
+        <div class="rule-title">C++17 / ament_target_dependencies 사용 / launch·config 설치 명시</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ CMakeLists.txt</div>
+          <pre><span class="fn">cmake_minimum_required</span>(<span class="at">VERSION</span> 3.8)
+<span class="fn">project</span>(roboseasy_joint_controller)
+
+<span class="kw">if</span>(<span class="at">NOT</span> CMAKE_CXX_STANDARD)
+  <span class="fn">set</span>(CMAKE_CXX_STANDARD 17)
+<span class="kw">endif</span>()
+<span class="kw">if</span>(CMAKE_COMPILER_IS_GNUCXX <span class="at">OR</span> CMAKE_CXX_COMPILER_ID <span class="at">MATCHES</span> <span class="st">"Clang"</span>)
+  <span class="fn">add_compile_options</span>(-Wall -Wextra -Wpedantic)
+<span class="kw">endif</span>()
+
+<span class="fn">find_package</span>(ament_cmake <span class="at">REQUIRED</span>)
+<span class="fn">find_package</span>(rclcpp <span class="at">REQUIRED</span>)
+<span class="fn">find_package</span>(sensor_msgs <span class="at">REQUIRED</span>)
+<span class="fn">find_package</span>(roboseasy_msgs <span class="at">REQUIRED</span>)
+
+<span class="fn">add_executable</span>(joint_controller_node src/joint_controller.cpp)
+<span class="fn">target_include_directories</span>(joint_controller_node <span class="at">PUBLIC</span>
+  $&lt;BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include&gt;
+  $&lt;INSTALL_INTERFACE:include&gt;)
+<span class="fn">ament_target_dependencies</span>(joint_controller_node
+  rclcpp sensor_msgs roboseasy_msgs)
+
+<span class="fn">install</span>(<span class="at">TARGETS</span> joint_controller_node
+  <span class="at">DESTINATION</span> lib/${PROJECT_NAME})
+
+<span class="cm"># launch / config 설치 (필수)</span>
+<span class="fn">install</span>(<span class="at">DIRECTORY</span> launch config
+  <span class="at">DESTINATION</span> share/${PROJECT_NAME})
+
+<span class="fn">ament_package</span>()</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 인터페이스 -->
+  <section id="interface">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>인터페이스 (msg / srv / action)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">INTERFACE</span>
+        <div class="rule-title">인터페이스는 별도 패키지(roboseasy_msgs)로 분리 / 파일명 PascalCase</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">노드 패키지 안에 msg를 두면 순환 의존이 생기기 쉽다. 인터페이스는 전용 패키지에 모은다.</p>
+        <div class="single-code">
+          <div class="code-label ros">INTERFACE PACKAGE LAYOUT</div>
+          <pre>roboseasy_msgs/
+├── package.xml            <span class="cm"># rosidl_default_generators 의존</span>
+├── CMakeLists.txt
+├── msg/
+│   ├── RobotState.msg
+│   └── FsrState.msg
+├── srv/
+│   └── QueryState.srv
+└── action/
+    └── Walk.action</pre>
+        </div>
+        <div class="code-grid" style="margin-top:0.75rem;">
+          <div class="code-block">
+            <div class="code-label ok">✓ RobotState.msg / QueryState.srv</div>
+            <pre><span class="cm"># msg — 필드는 snake_case</span>
+<span class="tp">std_msgs/Header</span> header
+<span class="tp">float64[]</span> joint_positions
+<span class="tp">float64[]</span> joint_velocities
+<span class="tp">bool</span> is_stable
+
+<span class="cm"># srv — '---' 로 요청/응답 구분</span>
+<span class="tp">string</span> joint_name
+---
+<span class="tp">float64</span> position
+<span class="tp">float64</span> velocity</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label ok">✓ Walk.action</div>
+            <pre><span class="cm"># goal</span>
+<span class="tp">float64</span> target_distance
+---
+<span class="cm"># result</span>
+<span class="tp">bool</span> is_success
+---
+<span class="cm"># feedback</span>
+<span class="tp">float64</span> progress</pre>
+          </div>
+        </div>
+        <table class="summary-table" style="margin-top:1rem;">
+          <thead><tr><th style="width:25%">항목</th><th style="width:35%">규칙</th><th>예시</th></tr></thead>
+          <tbody>
+            <tr><td class="subject">파일명</td><td>PascalCase</td><td><span class="inline-code ros">RobotState.msg</span></td></tr>
+            <tr><td class="subject">필드명</td><td>snake_case</td><td><span class="inline-code">joint_positions</span>, <span class="inline-code">is_stable</span></td></tr>
+            <tr><td class="subject">상수</td><td>UPPER_SNAKE_CASE</td><td><span class="inline-code">uint8 MODE_STAND = 0</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 토픽 / 서비스 / 프레임 -->
+  <section id="topic">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>토픽 / 서비스 / 액션 / 프레임 이름</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">/roboseasy/{그룹}/{이름} 계층 구조, 모두 snake_case</div>
+      </div>
+      <div class="rule-body">
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="cm"># 토픽</span>
+<span class="ro">/roboseasy/imu/data</span>
+<span class="ro">/roboseasy/joint_states</span>
+<span class="ro">/roboseasy/robot_state</span>
+<span class="ro">/roboseasy/fsr/data</span>
+
+<span class="cm"># 서비스 / 액션</span>
+<span class="ro">/roboseasy/query_state</span>
+<span class="ro">/roboseasy/walk</span>
+
+<span class="cm"># TF 프레임 ID</span>
+base_link
+l_foot_link
+imu_link</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre>/RobosEasy/JointStates  <span class="cm"># PascalCase X</span>
+/joint-states           <span class="cm"># 하이픈 X</span>
+jointStates             <span class="cm"># 네임스페이스 없음</span>
+                        <span class="cm"># + camelCase X</span></pre>
+          </div>
+        </div>
+        <div class="rule-note ros">💡 <strong>네임스페이스로 다중 로봇 대응:</strong> 같은 노드를 여러 로봇에 띄울 때는 런치에서 <span class="inline-code ros">namespace='abo'</span>를 주어 <span class="inline-code ros">/abo/roboseasy/...</span>처럼 분리한다. 토픽을 하드코딩하지 않는다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. 런치 파일 -->
+  <section id="launch">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>런치 파일</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">LAUNCH</span>
+        <div class="rule-title">snake_case.launch.py (Python 런치) / 파라미터는 YAML 파일로 분리</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ state_estimator.launch.py</div>
+          <pre><span class="kw">import</span> os
+
+<span class="kw">from</span> ament_index_python.packages <span class="kw">import</span> get_package_share_directory
+<span class="kw">from</span> launch <span class="kw">import</span> LaunchDescription
+<span class="kw">from</span> launch_ros.actions <span class="kw">import</span> Node
+
+
+<span class="kw">def</span> <span class="fn">generate_launch_description</span>() -&gt; <span class="cl">LaunchDescription</span>:
+	config = os.path.<span class="fn">join</span>(
+		<span class="fn">get_package_share_directory</span>(<span class="st">'roboseasy_state_estimator'</span>),
+		<span class="st">'config'</span>,
+		<span class="st">'state_estimator.yaml'</span>,
+	)
+
+	<span class="kw">return</span> <span class="cl">LaunchDescription</span>([
+		<span class="cl">Node</span>(
+			<span class="at">package</span>=<span class="st">'roboseasy_state_estimator'</span>,
+			<span class="at">executable</span>=<span class="st">'state_estimator_node'</span>,
+			<span class="at">name</span>=<span class="st">'state_estimator_node'</span>,
+			<span class="at">output</span>=<span class="st">'screen'</span>,
+			<span class="at">parameters</span>=[config],
+		),
+	])</pre>
+        </div>
+        <div class="rule-note warn">⚠️ 파라미터 기본값을 런치 파일 안에 하드코딩하지 않는다. <span class="inline-code">config/*.yaml</span>로 분리해 재사용·수정을 쉽게 한다. 시스템 전체 실행은 <span class="inline-code">roboseasy_bringup</span> 패키지의 통합 런치(<span class="inline-code">bringup.launch.py</span>)에서 개별 런치를 <span class="inline-code">IncludeLaunchDescription</span>으로 조합한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. 파라미터 YAML -->
+  <section id="paramyaml">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>파라미터 YAML</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-ros">CONFIG</span>
+        <div class="rule-title">{노드이름}: → ros__parameters: 계층 / 노드 이름과 일치</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ config/state_estimator.yaml</div>
+          <pre><span class="at">state_estimator_node</span>:
+  <span class="at">ros__parameters</span>:
+    <span class="at">control_hz</span>: <span class="nm">100</span>
+    <span class="at">lipm_height</span>: <span class="nm">0.75</span>
+    <span class="at">use_sim_time</span>: <span class="kw">false</span>
+    <span class="at">urdf_path</span>: <span class="st">''</span></pre>
+        </div>
+        <div class="rule-note warn">⚠️ 최상위 키(<span class="inline-code">state_estimator_node</span>)는 런치의 <span class="inline-code">name</span> 및 노드의 <span class="inline-code">super().__init__('...')</span>과 <strong>정확히 일치</strong>해야 파라미터가 적용된다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. colcon 빌드 -->
+  <section id="colcon">
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <h2>colcon 빌드 규칙</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-build">BUILD</span>
+        <div class="rule-title">항상 워크스페이스 루트에서 빌드 / --symlink-install 권장</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ 빌드 명령</div>
+          <pre><span class="cm"># 전체 빌드 (워크스페이스 루트에서)</span>
+<span class="fn">colcon</span> build --symlink-install
+
+<span class="cm"># 특정 패키지만 빌드</span>
+<span class="fn">colcon</span> build --symlink-install --packages-select roboseasy_state_estimator
+
+<span class="cm"># 특정 패키지 + 의존 패키지까지</span>
+<span class="fn">colcon</span> build --symlink-install --packages-up-to roboseasy_bringup
+
+<span class="cm"># 빌드 후 반드시 source</span>
+<span class="kw">source</span> install/setup.bash</pre>
+        </div>
+        <table class="summary-table" style="margin-top:1rem;">
+          <thead><tr><th style="width:35%">옵션</th><th>효과</th></tr></thead>
+          <tbody>
+            <tr><td class="subject"><span class="inline-code">--symlink-install</span></td><td>Python·설정 파일을 심볼릭 링크로 설치 → 수정 후 재빌드 불필요</td></tr>
+            <tr><td class="subject"><span class="inline-code">--packages-select</span></td><td>지정 패키지만 빌드</td></tr>
+            <tr><td class="subject"><span class="inline-code">--packages-up-to</span></td><td>지정 패키지 + 그 의존성까지 빌드</td></tr>
+          </tbody>
+        </table>
+        <div class="rule-note">💡 자주 쓰는 빌드/소스 명령은 alias로 등록해 통일한다 → <a href="roboseasy_bashrc_alias_guide.html">.bashrc / alias 가이드</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. .gitignore -->
+  <section id="gitignore">
+    <div class="section-header">
+      <div class="section-number">12</div>
+      <h2>.gitignore (워크스페이스)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">MANAGE</span>
+        <div class="rule-title">build/ · install/ · log/는 커밋하지 않는다</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ .gitignore</div>
+          <pre><span class="cm"># colcon 산출물</span>
+build/
+install/
+log/
+
+<span class="cm"># Python</span>
+__pycache__/
+*.pyc
+*.egg-info/
+
+<span class="cm"># 에디터</span>
+.vscode/
+*.swp</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. 패키지 README -->
+  <section id="readme">
+    <div class="section-header">
+      <div class="section-number">13</div>
+      <h2>패키지 README</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">DOCS</span>
+        <div class="rule-title">각 패키지 루트에 README.md — 노드 · 토픽 · 파라미터 · 실행법 명시</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ README.md 템플릿</div>
+          <pre><span class="cl"># roboseasy_state_estimator</span>
+
+로봇 상태 추정 노드 패키지.
+
+<span class="cl">## 노드</span>
+- <span class="st">`state_estimator_node`</span>
+
+<span class="cl">## 구독 (Subscribe)</span>
+- <span class="ro">/roboseasy/imu/data</span> (sensor_msgs/Imu)
+- <span class="ro">/roboseasy/joint_states</span> (sensor_msgs/JointState)
+
+<span class="cl">## 발행 (Publish)</span>
+- <span class="ro">/roboseasy/robot_state</span> (roboseasy_msgs/RobotState)
+
+<span class="cl">## 파라미터</span>
+- <span class="st">`control_hz`</span> (int, 100)
+- <span class="st">`lipm_height`</span> (float, 0.75)
+
+<span class="cl">## 실행</span>
+<span class="fn">ros2 launch</span> roboseasy_state_estimator state_estimator.launch.py</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--border); padding-top:1.5rem; color:var(--text3); font-size:12px;">
+    RobosEasy ROS2 Project &amp; Workspace Convention v1.0 — ROS2 Humble + colcon(ament) 기반
+  </footer>
+
+</main>
+
+</body>
+</html>
