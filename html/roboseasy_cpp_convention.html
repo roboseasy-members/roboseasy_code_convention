@@ -389,6 +389,7 @@
   <a href="#include">인클루드 순서</a>
   <a href="#smartptr">스마트 포인터</a>
   <a href="#conditional">조건부 컴파일</a>
+  <a href="#path">경로 처리 (이식성)</a>
 
   <div class="sidebar-section">문서화</div>
   <a href="#doxygen">Doxygen 주석</a>
@@ -441,6 +442,7 @@
             <tr><td class="subject">타입 별칭 (using)</td><td>PascalCase</td><td><span class="inline-code">using Imu = sensor_msgs::msg::Imu</span></td></tr>
             <tr><td class="subject">파일명</td><td>snake_case</td><td><span class="inline-code">roboseasy_state_estimator.hpp</span></td></tr>
             <tr><td class="subject">헤더 가드</td><td>UPPER_SNAKE_CASE + _</td><td><span class="inline-code">ROBOSEASY_STATE_ESTIMATOR_HPP_</span></td></tr>
+            <tr><td class="subject">경로(이식성)</td><td>절대 경로 하드코딩 금지 / 패키지·파라미터 기준</td><td><span class="inline-code">ament_index_cpp::get_package_share_directory(...)</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1157,6 +1159,59 @@ pitch *= <span class="nm">-1.0</span>;
         </div>
         <div class="rule-note">
           <strong>권장 사용 시점:</strong> 클래스 하나의 구현이 여러 .cpp로 분할되거나 한 파일 내에서 초기화 / 콜백 / 계산 / 퍼블리시 섹션이 뚜렷이 구분될 때.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 경로 처리 (이식성) -->
+  <section id="path">
+    <div class="section-header">
+      <div class="section-number">18</div>
+      <h2>경로 처리 (이식성) ⭐</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-struct">PORTABILITY</span>
+        <div class="rule-title">절대 경로 하드코딩 금지 — 패키지 리소스 / 파라미터 기준으로 작성</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">개발자 개인 PC 계정에 종속된 절대 경로(<code style="color:var(--danger)">/home/철수/...</code>)를 코드에 박아두면 남이 클론했을 때 곧바로 깨진다. URDF·설정·리소스 위치는 <strong>항상</strong> ROS2 패키지 share 디렉터리(<code style="color:var(--accent3)">ament_index_cpp</code>)나 파라미터·환경 변수로 조회해, 누구나 그대로 빌드·실행할 수 있게 한다. 경로 결합은 <code style="color:var(--accent3)">std::filesystem</code>으로 처리한다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="kw">#include</span> &lt;filesystem&gt;
+<span class="kw">#include</span> &lt;ament_index_cpp/get_package_share_directory.hpp&gt;
+
+<span class="kw">namespace</span> fs = std::filesystem;
+
+<span class="cm">// 패키지 share 디렉터리 기준 (누구나 실행 가능)</span>
+<span class="kw">const</span> fs::path pkg_share =
+  ament_index_cpp::<span class="fn">get_package_share_directory</span>(<span class="st">"roboseasy_bringup"</span>);
+<span class="kw">const</span> fs::path urdf_path = pkg_share / <span class="st">"urdf"</span> / <span class="st">"roboseasy.urdf"</span>;
+
+<span class="cm">// 경로를 ROS2 파라미터로 주입 (launch에서 지정)</span>
+<span class="kw">this</span>-&gt;<span class="fn">declare_parameter</span>&lt;std::string&gt;(<span class="st">"urdf_path"</span>, <span class="st">""</span>);
+<span class="kw">const</span> std::string p =
+  <span class="kw">this</span>-&gt;<span class="fn">get_parameter</span>(<span class="st">"urdf_path"</span>).<span class="fn">as_string</span>();</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre><span class="cm">// 개인 계정 / 특정 PC 절대 경로 하드코딩</span>
+<span class="kw">const</span> std::string urdf_path =
+  <span class="st">"/home/chulsoo/ws/urdf/roboseasy.urdf"</span>;
+<span class="cm">// ↑ 계정명 종속 X — 남이 클론하면 깨짐</span>
+
+<span class="kw">const</span> std::string config =
+  <span class="st">"/home/chulsoo/config/robot.yaml"</span>;
+<span class="cm">// ↑ 절대 경로 하드코딩 X</span>
+
+std::ifstream f(<span class="st">"C:/Users/roboseasy/data.csv"</span>);
+<span class="cm">// ↑ 특정 PC 종속 X</span></pre>
+          </div>
+        </div>
+        <div class="rule-note">
+          <strong>핵심:</strong> 경로는 "내 PC에서만 되는 코드"의 대표적 원인이다. C++/ROS2에서는 <code style="color:var(--accent3)">ament_index_cpp::get_package_share_directory()</code> 또는 launch 파일이 넘겨주는 파라미터를 기본으로 삼고, 문자열로 시작하는 절대 경로가 코드에 보이면 리뷰에서 반드시 지적한다. 경로 결합·정규화는 <code style="color:var(--accent3)">std::filesystem::path</code>로 처리한다.
         </div>
       </div>
     </div>

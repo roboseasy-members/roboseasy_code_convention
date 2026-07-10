@@ -23,6 +23,7 @@
 | 타입 별칭 (using) | PascalCase | `using Imu = sensor_msgs::msg::Imu` |
 | 파일명 | snake_case | `roboseasy_state_estimator.hpp` |
 | 헤더 가드 | UPPER_SNAKE_CASE + `_` | `ROBOSEASY_STATE_ESTIMATOR_HPP_` |
+| **경로(이식성)** | **절대 경로 하드코딩 금지 / 패키지·파라미터 기준** | `ament_index_cpp::get_package_share_directory(...)` |
 
 ---
 
@@ -528,6 +529,44 @@ const double bc_x = bo_x + oc_x;
 
 > **권장 사용 시점:** 클래스 하나의 구현이 여러 `.cpp`로 분할되거나, 한 파일 내에서
 > 초기화 / 콜백 / 계산 / 퍼블리시 섹션이 뚜렷이 구분될 때.
+
+---
+
+## 18. 경로 처리 (이식성) ⭐
+
+**규칙:** 절대 경로 하드코딩 금지 — ROS2 패키지 리소스 조회(`ament_index_cpp`)나 파라미터·환경 변수로 경로를 주입해, 개발자 개인 PC 계정에 의존하지 않고 누구나 그대로 빌드·실행할 수 있게 한다.
+
+`/home/철수/...` 처럼 개인 계정·특정 PC에 종속된 절대 경로를 코드에 박아두면, 다른 사람이 클론했을 때 곧바로 깨진다. URDF·설정·리소스 위치는 **항상** 패키지 share 디렉터리나 ROS2 파라미터로 조회하고, 문자열 조작에는 `std::filesystem`을 사용한다.
+
+```cpp
+#include <filesystem>
+#include <ament_index_cpp/get_package_share_directory.hpp>
+
+// ✅ GOOD — ROS2 패키지 share 디렉터리 기준 (누구나 그대로 실행 가능)
+namespace fs = std::filesystem;
+
+const fs::path pkg_share =
+  ament_index_cpp::get_package_share_directory("roboseasy_bringup");
+const fs::path urdf_path   = pkg_share / "urdf" / "roboseasy.urdf";
+const fs::path config_path = pkg_share / "config" / "robot.yaml";
+
+// ✅ GOOD — 경로를 ROS2 파라미터로 주입 (하드코딩 대신 launch에서 지정)
+this->declare_parameter<std::string>("urdf_path", "");
+const std::string urdf_path =
+  this->get_parameter("urdf_path").as_string();
+
+// ✅ GOOD — 환경 변수 / 홈 디렉터리 기준 (계정명에 비종속)
+const char *home = std::getenv("HOME");
+const fs::path data_dir = fs::path(home) / "roboseasy_data";
+
+
+// ❌ BAD — 개인 계정 / 특정 PC 절대 경로 하드코딩
+const std::string urdf_path = "/home/chulsoo/roboseasy_ws/urdf/roboseasy.urdf"; // 계정명 종속 X
+const std::string config    = "/home/chulsoo/config/robot.yaml";                // 남이 클론하면 깨짐 X
+std::ifstream f("C:/Users/roboseasy/data.csv");                                 // 특정 PC 종속 X
+```
+
+> ⚠️ **핵심:** 경로는 "내 PC에서만 되는 코드"의 대표적 원인이다. C++/ROS2에서는 `ament_index_cpp::get_package_share_directory()` 또는 launch 파일이 넘겨주는 파라미터를 기본으로 삼고, 문자열로 시작하는 절대 경로가 코드에 보이면 리뷰에서 반드시 지적한다. 경로 결합·정규화는 `std::filesystem::path`로 처리한다.
 
 ---
 

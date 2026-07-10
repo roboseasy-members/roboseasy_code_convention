@@ -24,6 +24,7 @@
 | ROS2 콜백 함수 | snake_case + `_callback` | `imu_callback`, `timer_callback` |
 | 파일명 | snake_case + `.py` | `joint_controller.py` |
 | **들여쓰기** | **탭(Tab) 1개** | `insertSpaces: false, tabSize: 4` |
+| **경로(이식성)** | **절대 경로 하드코딩 금지 / `BASE_DIR` 기준** | `BASE_DIR = os.path.dirname(os.path.abspath(__file__))` |
 
 ---
 
@@ -568,6 +569,41 @@ class BadNode(Node):
 def main() -> None:  # 클래스와 함수 사이 빈 줄 없음 X
     pass
 ```
+
+---
+
+## 18. 경로 처리 (이식성) ⭐
+
+**규칙:** 절대 경로 하드코딩 금지 — 파일 기준 경로(`BASE_DIR`)나 환경 변수로 작성해, 개발자 개인 PC 계정에 의존하지 않고 누구나 그대로 실행할 수 있게 한다.
+
+`/home/철수/...` 처럼 개인 계정·특정 PC에 종속된 절대 경로를 코드에 박아두면, 다른 사람이 클론했을 때 곧바로 깨진다. 파일·리소스 위치는 **항상** 현재 파일 위치를 기준으로 계산하거나, 환경 변수 / ROS2 파라미터로 주입한다.
+
+```python
+import os
+
+# ✅ GOOD — 현재 파일 위치 기준으로 경로 계산 (누구나 그대로 실행 가능)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CONFIG_PATH = os.path.join(BASE_DIR, 'config', 'robot.yaml')
+URDF_PATH = os.path.join(BASE_DIR, '..', 'urdf', 'roboseasy.urdf')
+
+# ✅ GOOD — 환경 변수 / 홈 디렉터리 기준 (계정명에 비종속)
+DATA_DIR = os.path.join(os.path.expanduser('~'), 'roboseasy_data')
+LOG_DIR = os.environ.get('ROBOSEASY_LOG_DIR', os.path.join(BASE_DIR, 'logs'))
+
+# ✅ GOOD — ROS2 패키지 리소스는 ament index로 조회
+from ament_index_python.packages import get_package_share_directory
+
+pkg_share = get_package_share_directory('roboseasy_bringup')
+urdf_path = os.path.join(pkg_share, 'urdf', 'roboseasy.urdf')
+
+
+# ❌ BAD — 개인 계정 / 특정 PC 절대 경로 하드코딩
+CONFIG_PATH = '/home/chulsoo/roboseasy_ws/config/robot.yaml'   # 계정명 종속 X
+URDF_PATH = 'C:/Users/roboseasy/urdf/roboseasy.urdf'           # 특정 PC 종속 X
+DATA_DIR = '/home/chulsoo/data'                                # 남이 클론하면 깨짐 X
+```
+
+> ⚠️ **핵심:** 경로는 "내 PC에서만 되는 코드"의 대표적 원인이다. `BASE_DIR = os.path.dirname(os.path.abspath(__file__))` 패턴을 기본으로 삼고, 문자열로 시작하는 절대 경로가 코드에 보이면 리뷰에서 반드시 지적한다. 최신 코드에서는 `pathlib.Path(__file__).resolve().parent` 사용도 권장한다.
 
 ---
 
