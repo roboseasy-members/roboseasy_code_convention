@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobosEasy Git 규칙서</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2538;
+    --border: #2a3050;
+    --accent: #4f8ef7;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --ros: #06b6d4;
+    --text: #e2e8f0;
+    --text2: #8892a4;
+    --text3: #4a5568;
+    --code-bg: #0d1117;
+    --tag-blue: rgba(79,142,247,0.15);
+    --tag-green: rgba(16,185,129,0.15);
+    --tag-purple: rgba(124,58,237,0.15);
+    --tag-orange: rgba(245,158,11,0.15);
+    --tag-cyan: rgba(6,182,212,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 0 0 2rem;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-header .logo {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent3);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sidebar-section {
+    padding: 0.75rem 1.25rem 0.25rem;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 0.4rem 1.25rem;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sidebar a:hover {
+    color: var(--text);
+    background: var(--bg3);
+    border-left-color: var(--accent3);
+  }
+
+  .sidebar a.ros-link:hover { border-left-color: var(--ros); }
+
+  .main {
+    margin-left: 240px;
+    padding: 2.5rem 3rem 4rem;
+    max-width: 960px;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero .badge-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-py  { background: var(--tag-green); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-ros { background: var(--tag-cyan); color: var(--ros); border: 1px solid rgba(6,182,212,0.3); }
+  .badge-g   { background: var(--tag-blue); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+
+  .hero h1 { font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+  .hero p  { color: var(--text2); font-size: 14px; }
+
+  .meta-row { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .meta-item { font-size: 12px; color: var(--text3); }
+  .meta-item span { color: var(--text2); }
+
+  section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--accent3);
+    color: white;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-number.ros { background: var(--ros); }
+
+  h2 { font-size: 18px; font-weight: 600; color: var(--text); }
+
+  .rule-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .rule-header {
+    padding: 0.875rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .rule-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-naming { background: var(--tag-blue);   color: var(--accent);  border: 1px solid rgba(79,142,247,0.25); }
+  .tag-style  { background: var(--tag-purple);  color: #a78bfa;        border: 1px solid rgba(124,58,237,0.25); }
+  .tag-docs   { background: var(--tag-green);   color: var(--accent3); border: 1px solid rgba(16,185,129,0.25); }
+  .tag-type   { background: var(--tag-orange);  color: var(--warn);    border: 1px solid rgba(245,158,11,0.25); }
+  .tag-ros    { background: var(--tag-cyan);    color: var(--ros);     border: 1px solid rgba(6,182,212,0.25); }
+
+  .rule-title { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  .rule-body { padding: 1rem 1.25rem; }
+
+  .rule-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .code-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .code-block { border-radius: 7px; overflow: hidden; }
+
+  .code-label {
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .code-label.ok  { background: rgba(16,185,129,0.2);  color: var(--accent3); }
+  .code-label.bad { background: rgba(239,68,68,0.15);  color: #f87171; }
+  .code-label.ros { background: rgba(6,182,212,0.15);  color: var(--ros); }
+
+  pre {
+    background: var(--code-bg);
+    padding: 0.75rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+
+  .kw  { color: #c792ea; }
+  .fn  { color: #82aaff; }
+  .cl  { color: #ffcb6b; }
+  .cm  { color: #546e7a; font-style: italic; }
+  .st  { color: #c3e88d; }
+  .nm  { color: #f78c6c; }
+  .at  { color: #89ddff; }
+  .tp  { color: #f59e0b; }
+  .dc  { color: #80cbc4; }
+  .ro  { color: #06b6d4; }
+
+  .rule-note {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.875rem;
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 5px 5px 0;
+    font-size: 12px;
+    color: var(--text2);
+    background: rgba(16,185,129,0.07);
+  }
+
+  .rule-note.warn { border-left-color: var(--warn); background: rgba(245,158,11,0.07); }
+  .rule-note.ros  { border-left-color: var(--ros);  background: rgba(6,182,212,0.07);  }
+
+  .rule-note strong { color: var(--accent3); }
+  .rule-note.warn strong { color: var(--warn); }
+  .rule-note.ros  strong { color: var(--ros); }
+
+  .single-code { margin-top: 0.75rem; border-radius: 7px; overflow: hidden; }
+  .single-code pre { border-radius: 0; border: 1px solid var(--border); border-top: none; }
+
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 0.5rem;
+  }
+
+  .summary-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: middle;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .subject { color: var(--text); font-weight: 500; }
+
+  .inline-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--accent3);
+    border: 1px solid var(--border);
+  }
+
+  .inline-code.ros { color: var(--ros); }
+
+  .ros-banner {
+    background: linear-gradient(135deg, rgba(6,182,212,0.1) 0%, rgba(6,182,212,0.05) 100%);
+    border: 1px solid rgba(6,182,212,0.25);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .ros-banner strong { color: var(--ros); }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 1.5rem; }
+    .code-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">RobosEasy</div>
+    <h2>Git 규칙서</h2>
+  </div>
+
+  <div class="sidebar-section">개요</div>
+  <a href="#summary">규칙 요약표</a>
+
+  <div class="sidebar-section">레포 / 브랜치</div>
+  <a href="#repo">레포지토리 네이밍</a>
+  <a href="#branch">브랜치 전략</a>
+
+  <div class="sidebar-section">커밋</div>
+  <a href="#format">커밋 메시지 형식</a>
+  <a href="#tags">커밋 태그 종류</a>
+  <a href="#atomic">커밋 단위</a>
+  <a href="#commit-body">커밋 본문</a>
+
+  <div class="sidebar-section">협업 / 배포</div>
+  <a href="#merge">머지 규칙</a>
+  <a href="#version">버전 태그 (Release)</a>
+
+  <div class="sidebar-section">레포 관리</div>
+  <a href="#forbidden">금지 사항</a>
+  <a href="#gitignore">.gitignore 표준</a>
+</nav>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="badge-row">
+      <span class="badge badge-py">Git / GitHub</span>
+      <span class="badge badge-ros">main · develop · feature</span>
+      <span class="badge badge-g">Semantic Versioning</span>
+    </div>
+    <h1>RobosEasy Git 규칙서</h1>
+    <p>커밋 태그 · 브랜치 전략 · 레포 네이밍 · 버전 관리 규칙</p>
+    <div class="meta-row">
+      <div class="meta-item">커밋 형식: <span>Tag: 한줄 설명</span></div>
+      <div class="meta-item">브랜치: <span>main / develop / feature</span></div>
+      <div class="meta-item">버전: <span>vMAJOR.MINOR.PATCH</span></div>
+    </div>
+  </div>
+
+  <section id="summary">
+    <div class="section-header">
+      <div class="section-number">∑</div>
+      <h2>규칙 요약표</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-body" style="padding:0;">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th style="width:26%">대상</th>
+              <th style="width:34%">규칙</th>
+              <th>예시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">레포지토리 이름</td><td>소문자 snake_case</td><td><span class="inline-code">soarm101</span>, <span class="inline-code">roboseasy_code_convention</span></td></tr>
+            <tr><td class="subject">브랜치 구조</td><td>main / develop / feature/{이름}</td><td><span class="inline-code">feature/ik</span>, <span class="inline-code">feature/vla</span></td></tr>
+            <tr><td class="subject">커밋 메시지</td><td>Tag: 한줄 설명</td><td><span class="inline-code">Add: IK solver 초기 구현</span></td></tr>
+            <tr><td class="subject">커밋 태그</td><td>대문자 시작 + 콜론 + 공백</td><td><span class="inline-code">Add:</span>, <span class="inline-code">Fix:</span>, <span class="inline-code">Improve:</span></td></tr>
+            <tr><td class="subject">커밋 단위</td><td>1 커밋 = 1 목적</td><td>기능 추가와 버그 수정을 한 커밋에 X</td></tr>
+            <tr><td class="subject">버전 태그</td><td>v + Semantic Versioning</td><td><span class="inline-code">v1.0.0</span>, <span class="inline-code">v2.1.3</span></td></tr>
+            <tr><td class="subject">금지 사항</td><td>main 직접 push / force push / 비밀정보 커밋</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 레포지토리 네이밍 -->
+  <section id="repo">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>레포지토리 네이밍</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-naming">NAMING</span>
+        <div class="rule-title">모두 소문자 + snake_case — 숫자 사용 가능, 하이픈(-) 대신 언더바(_)</div>
+      </div>
+      <div class="rule-body">
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre>soarm101
+roboseasy_code_convention
+alice4_walking_module</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre>SoArm101                  <span class="cm"># 대문자 X</span>
+roboseasy-code-convention <span class="cm"># 하이픈 X</span>
+RoboseasyCodeConvention   <span class="cm"># PascalCase X</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 브랜치 전략 -->
+  <section id="branch">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>브랜치 전략</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">STRUCT</span>
+        <div class="rule-title">main / develop / feature/{이름} — 3단 구조</div>
+      </div>
+      <div class="rule-body" style="padding:0;">
+        <table class="summary-table">
+          <thead>
+            <tr><th style="width:24%">브랜치</th><th style="width:38%">용도</th><th>규칙</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">main</td><td>완료된 프로젝트의 최종 코드</td><td>프로젝트 완료 시 develop에서 머지</td></tr>
+            <tr><td class="subject">develop</td><td>진행중인 프로젝트의 최신 코드</td><td>feature 브랜치의 머지 대상</td></tr>
+            <tr><td class="subject">feature/{이름}</td><td>각 기능별 개발 브랜치</td><td>develop에서 분기, 완성 후 develop으로 머지</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm"># 예: so-arm 레포에서 IK 연구와 VLA 연구를 각각 진행하는 경우</span>
+main
+develop
+feature/ik
+feature/vla
+
+<span class="cm"># feature 브랜치 생성 — develop에서 분기</span>
+git switch develop
+git switch -c feature/ik
+
+<span class="cm"># 작업 완료 후 develop으로 머지</span>
+git switch develop
+git merge feature/ik
+git push origin develop</pre>
+        </div>
+        <div class="rule-note warn">
+          <strong>⚠️ 주의:</strong> 각 개발자는 자신의 <code style="color:var(--warn)">feature</code> 브랜치에서만 작업한다. <code style="color:var(--warn)">main</code>과 <code style="color:var(--warn)">develop</code>에서 직접 커밋하지 않는다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 커밋 메시지 형식 -->
+  <section id="format">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>커밋 메시지 형식 ⭐</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">COMMIT</span>
+        <div class="rule-title">Tag: 한줄 설명 — 태그는 대문자로 시작, 콜론(:) 뒤 공백 1개</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">제목은 <strong>한 줄</strong>로 무엇을 왜 했는지 요약한다 (50자 이내 권장). 한국어 작성을 허용하며 끝에 마침표를 붙이지 않는다. 커밋 메시지만 보고도 "무엇을 했는지" 파악되어야 한다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD</div>
+            <pre><span class="st">Add:</span> IK solver 초기 구현
+<span class="st">Fix:</span> VLA 모델 입력 차원 오류 수정
+<span class="st">Improve:</span> 관절 보간 알고리즘 성능 개선
+<span class="st">Delete:</span> 사용하지 않는 테스트 파일 제거
+<span class="st">Merge:</span> feature/ik를 develop에 머지</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD</div>
+            <pre>add: ik solver   <span class="cm"># 소문자 태그 X</span>
+Add : IK solver  <span class="cm"># 콜론 앞 공백 X</span>
+Add:IK solver    <span class="cm"># 콜론 뒤 공백 없음 X</span>
+수정함            <span class="cm"># 태그 없음 X</span>
+Fix: 버그 수정    <span class="cm"># 무엇을 고쳤는지 알 수 없음 X</span>
+Add: IK 추가하고 URDF 오타도 수정
+                 <span class="cm"># 두 가지 목적 X → 커밋 분리</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 커밋 태그 종류 -->
+  <section id="tags">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>커밋 태그 종류 ⭐</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">COMMIT</span>
+        <div class="rule-title">기본 태그 5종 우선 사용 — 상황에 맞으면 보조 태그 사용</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc"><strong>기본 태그 (필수 숙지)</strong></p>
+      </div>
+      <div class="rule-body" style="padding-top:0;">
+        <table class="summary-table">
+          <thead>
+            <tr><th style="width:18%">태그</th><th style="width:38%">사용 시점</th><th>예시</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">Add:</td><td>새 파일 · 코드 · 기능 추가</td><td><span class="inline-code">Add: FSR 센서 드라이버 노드 추가</span></td></tr>
+            <tr><td class="subject">Fix:</td><td>버그 · 오류 · 오타 수정</td><td><span class="inline-code">Fix: ZMP 계산 부호 오류 수정</span></td></tr>
+            <tr><td class="subject">Improve:</td><td>기존 기능의 성능 · 품질 개선</td><td><span class="inline-code">Improve: 상태 추정 필터 지연 감소</span></td></tr>
+            <tr><td class="subject">Delete:</td><td>파일 · 코드 삭제</td><td><span class="inline-code">Delete: 미사용 legacy 컨트롤러 제거</span></td></tr>
+            <tr><td class="subject">Merge:</td><td>브랜치 병합 커밋</td><td><span class="inline-code">Merge: feature/vla를 develop에 머지</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc"><strong>보조 태그</strong></p>
+      </div>
+      <div class="rule-body" style="padding-top:0;">
+        <table class="summary-table">
+          <thead>
+            <tr><th style="width:18%">태그</th><th style="width:38%">사용 시점</th><th>예시</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">Docs:</td><td>문서 작성 · 수정 (README, 규칙서, 주석)</td><td><span class="inline-code">Docs: 설치 가이드에 Jazzy 절차 추가</span></td></tr>
+            <tr><td class="subject">Refactor:</td><td>동작 변경 없는 구조 정리</td><td><span class="inline-code">Refactor: 콜백 함수를 별도 클래스로 분리</span></td></tr>
+            <tr><td class="subject">Style:</td><td>포매팅 · 네이밍 등 로직과 무관한 수정</td><td><span class="inline-code">Style: 변수명 snake_case로 통일</span></td></tr>
+            <tr><td class="subject">Test:</td><td>테스트 코드 추가 · 수정</td><td><span class="inline-code">Test: IK solver 단위 테스트 추가</span></td></tr>
+            <tr><td class="subject">Rename:</td><td>파일 · 폴더 이름 변경, 위치 이동</td><td><span class="inline-code">Rename: estimator.py를 state_estimator.py로 변경</span></td></tr>
+            <tr><td class="subject">Setup:</td><td>빌드 설정 · 의존성 · 환경 구성</td><td><span class="inline-code">Setup: package.xml에 pinocchio 의존성 추가</span></td></tr>
+            <tr><td class="subject">Revert:</td><td>이전 커밋 되돌리기</td><td><span class="inline-code">Revert: Add: IK solver 초기 구현 롤백</span></td></tr>
+            <tr><td class="subject">Hotfix:</td><td>배포된 main의 긴급 수정</td><td><span class="inline-code">Hotfix: 부팅 시 노드 크래시 긴급 수정</span></td></tr>
+            <tr><td class="subject">Release:</td><td>버전 릴리즈 · 태깅</td><td><span class="inline-code">Release: v1.2.0</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc"><strong>태그 선택 기준 (헷갈릴 때)</strong></p>
+      </div>
+      <div class="rule-body" style="padding-top:0;">
+        <table class="summary-table">
+          <thead>
+            <tr><th style="width:60%">상황</th><th>태그</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>안 되던 것을 되게 함</td><td class="subject">Fix:</td></tr>
+            <tr><td>되던 것을 더 좋게 함 (성능 · 기능)</td><td class="subject">Improve:</td></tr>
+            <tr><td>되던 것을 그대로 두고 코드만 정리</td><td class="subject">Refactor:</td></tr>
+            <tr><td>로직은 안 건드리고 포맷 · 이름만 정리</td><td class="subject">Style:</td></tr>
+            <tr><td>코드가 아닌 문서만 수정</td><td class="subject">Docs:</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 커밋 단위 -->
+  <section id="atomic">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>커밋 단위</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">COMMIT</span>
+        <div class="rule-title">1 커밋 = 1 목적 (atomic commit)</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc">하나의 커밋에는 하나의 논리적 변경만 담는다. 태그를 하나로 정할 수 없다면 커밋을 분리하라는 신호다.</p>
+        <div class="code-grid">
+          <div class="code-block">
+            <div class="code-label ok">✓ GOOD — 목적별로 분리</div>
+            <pre><span class="st">Add:</span> FSR 센서 드라이버 노드 추가
+<span class="st">Fix:</span> IMU 콜백 타임스탬프 오류 수정
+<span class="st">Docs:</span> README에 실행 방법 추가</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-label bad">✗ BAD — 한 커밋에 여러 목적</div>
+            <pre>Add: FSR 드라이버 추가, IMU 버그 수정,
+     README 정리</pre>
+          </div>
+        </div>
+        <div class="rule-note">
+          <strong>💡 팁:</strong> 커밋을 자주, 작게 남기면 문제 발생 시 <code style="color:var(--accent3)">git revert</code> / <code style="color:var(--accent3)">git bisect</code>로 원인 커밋을 쉽게 찾을 수 있다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 커밋 본문 -->
+  <section id="commit-body">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>커밋 본문 (선택)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-docs">COMMIT</span>
+        <div class="rule-title">상세 설명이 필요하면 제목 아래 빈 줄 하나 두고 본문 작성</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="st">Fix:</span> 한 발 지지 시 CoP 계산 오차 수정
+
+- FSR 4채널 중 비접촉 발 채널이 노이즈로 0이 아닌 값을 출력
+- 접촉 판정 임계값(10N) 미만 채널은 CoP 계산에서 제외하도록 변경
+- 관련 이슈: #23</pre>
+        </div>
+        <div class="rule-note">
+          <strong>💡 팁:</strong> 제목만으로 충분하면 본문은 생략한다. 이슈가 있으면 <code style="color:var(--accent3)">#번호</code>로 참조한다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 머지 규칙 -->
+  <section id="merge">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>머지 규칙</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-type">FLOW</span>
+        <div class="rule-title">feature → develop → main 방향으로만 머지</div>
+      </div>
+      <div class="rule-body">
+        <p class="rule-desc"><code style="color:var(--accent3)">feature</code> 완성 → <code style="color:var(--accent3)">develop</code>으로 머지 (<code style="color:var(--accent3)">Merge:</code> 태그). 프로젝트 완료 → <code style="color:var(--accent3)">develop</code>을 <code style="color:var(--accent3)">main</code>으로 머지. 충돌(conflict)은 <strong>feature 브랜치 쪽에서</strong> 해결한 후 머지한다. 협업 레포에서는 GitHub <strong>Pull Request</strong>를 통한 머지를 권장한다 (리뷰 1인 이상).</p>
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm"># 머지 전 develop 최신화 후 feature에서 충돌 해결</span>
+git switch feature/ik
+git pull origin develop     <span class="cm"># 충돌 발생 시 여기서 해결</span>
+git switch develop
+git merge feature/ik</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 버전 태그 -->
+  <section id="version">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>버전 태그 (Release)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-type">RELEASE</span>
+        <div class="rule-title">v 접두사 + Semantic Versioning (vMAJOR.MINOR.PATCH)</div>
+      </div>
+      <div class="rule-body" style="padding-bottom:0;">
+        <table class="summary-table">
+          <thead>
+            <tr><th style="width:18%">자리</th><th style="width:44%">올리는 시점</th><th>예시</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">MAJOR</td><td>호환성이 깨지는 변경</td><td><span class="inline-code">v1.x.x → v2.0.0</span></td></tr>
+            <tr><td class="subject">MINOR</td><td>기능 추가 (호환 유지)</td><td><span class="inline-code">v1.0.x → v1.1.0</span></td></tr>
+            <tr><td class="subject">PATCH</td><td>버그 수정</td><td><span class="inline-code">v1.0.0 → v1.0.1</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre>git tag -a v1.2.0 -m <span class="st">"Release: v1.2.0"</span>
+git push origin v1.2.0</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 금지 사항 -->
+  <section id="forbidden">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>금지 사항 🚫</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">SAFETY</span>
+        <div class="rule-title">공유 브랜치와 레포를 보호하는 최소 안전 규칙</div>
+      </div>
+      <div class="rule-body" style="padding:0;">
+        <table class="summary-table">
+          <thead>
+            <tr><th style="width:46%">금지 항목</th><th>이유</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="subject">main / develop에 직접 push</td><td>리뷰 없는 코드가 공유 브랜치를 오염</td></tr>
+            <tr><td class="subject">공유 브랜치에 git push --force</td><td>팀원의 커밋 이력이 사라짐</td></tr>
+            <tr><td class="subject">비밀정보 커밋 (토큰, 키, 비밀번호)</td><td>한 번 push되면 이력에 영구 잔존</td></tr>
+            <tr><td class="subject">빌드 산출물 커밋 (build/, install/, log/)</td><td>레포 용량 증가, 충돌 유발</td></tr>
+            <tr><td class="subject">대용량 바이너리 커밋 (rosbag, 학습 weight)</td><td>100MB 초과 시 push 거부, clone 속도 저하</td></tr>
+            <tr><td class="subject">개인 설정 파일 커밋 (.vscode/, IDE 설정)</td><td>팀원 환경을 덮어씀</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rule-body">
+        <div class="rule-note warn">
+          <strong>⚠️ 주의:</strong> 비밀정보를 실수로 커밋했다면 즉시 팀에 공유하고 해당 키를 <strong>폐기 · 재발급</strong>한다. 커밋 삭제만으로는 안전하지 않다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- .gitignore -->
+  <section id="gitignore">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>.gitignore 표준 (ROS2 워크스페이스)</h2>
+    </div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <span class="rule-tag tag-style">SETUP</span>
+        <div class="rule-title">레포 생성 직후 .gitignore부터 커밋한다</div>
+      </div>
+      <div class="rule-body">
+        <div class="single-code">
+          <div class="code-label ok">✓ GOOD</div>
+          <pre><span class="cm"># ROS2 빌드 산출물</span>
+build/
+install/
+log/
+
+<span class="cm"># Python</span>
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+<span class="cm"># C++</span>
+*.o
+*.so
+*.a
+
+<span class="cm"># 데이터 / 로그</span>
+*.bag
+rosbag2_*/
+*.csv
+
+<span class="cm"># IDE / 개인 설정</span>
+.vscode/
+.idea/
+*.swp
+
+<span class="cm"># 비밀정보</span>
+.env
+*.pem
+*_token*</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>
